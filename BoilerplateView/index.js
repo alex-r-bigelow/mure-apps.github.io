@@ -6,6 +6,7 @@ import './style.scss';
 class BoilerplateView extends View {
   setup (d3el) {
     d3el.html(template);
+    d3el.select('image').attr('height', window.innerHeight - 2 * this.emSize);
   }
 
   draw (d3el) {
