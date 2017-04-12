@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script type="text/javascript">
+      // Becuase this is the organization page, Github requires that the page be served
+      // from master (no option to switch to the docs folder in Github's settings)...
+      // so we do it manually
+      if (window.location.href === 'https://mure-apps.github.io/') {
+        window.location = 'https://mure-apps.github.io/docs/';
+      }
+    </script>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <link rel="icon" type="image/png" href="img/mureLogo.png"/>
     <title>Boilerplate</title>
