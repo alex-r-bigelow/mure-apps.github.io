@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script type="text/javascript">
+      // Becuase this is the organization page, Github requires that the page be served
+      // from master (no option to switch to the docs folder in Github's settings)...
+      // so we do it manually
+      if (window.location.href === 'https://mure-apps.github.io/') {
+        window.location = 'https://mure-apps.github.io/docs/';
+      }
+    </script>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <link rel="icon" type="image/png" href="img/mureLogo.png"/>
-    <title>Boilerplate</title>
+    <title>Mure</title>
   </head>
   <body>
-    <div id="boilerplateViewContainer"></div>
-  <script type="text/javascript" src="webpack-bundle.js"></script></body>
+    <iframe id="demo" src="demo.svg"></iframe>
+    <div id="files" class="toolbar"></div>
+    <div id="viewControls" class="toolbar">
+      <a class="button">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHRpdGxlPkFzc2V0IDI8L3RpdGxlPjxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPjxnIGlkPSJCYWNrZ3JvdW5kIj48cGF0aCBkPSJNMTgsMEExOCwxOCwwLDEsMCwzNiwxOCwxOCwxOCwwLDAsMCwxOCwwWk0yOS40OSwyMEgyMHY5LjU0SDE2VjIwSDYuNTFWMTZIMTZWNi40NWg0VjE2aDkuNTRaIi8+PC9nPjwvZz48L3N2Zz4="/>
+        <label>Zoom in</label>
+      </a>
+      <a class="button">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHRpdGxlPkFzc2V0IDM8L3RpdGxlPjxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPjxnIGlkPSJCYWNrZ3JvdW5kIj48cGF0aCBkPSJNMTgsMEExOCwxOCwwLDEsMCwzNiwxOCwxOCwxOCwwLDAsMCwxOCwwWm05LjYyLDIwSDguMzdWMTZIMjcuNjNaIi8+PC9nPjwvZz48L3N2Zz4="/>
+        <label>Zoom out</label>
+      </a>
+    </div>
+    <div id="applications" class="toolbar"></div>
+  <script type="text/javascript" src="webpack-bundle.js"></script><script type="text/javascript" src="mure.js"></script></body>
 </html>

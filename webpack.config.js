@@ -3,17 +3,22 @@
 var path = require('path');
 // var CleanWebpackPlugin = require('clean-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var WebpackShellPlugin = require('webpack-shell-plugin');
 
 module.exports = {
   // Entry point for static analyzer
-  entry: './index.js',
+  entry: {
+    'webpack-bundle': './index.js',
+    'mure': './mure-library/mure.js',
+    'svgLibraryLoader': './mure-library/svgLibraryLoader.js'
+  },
 
   output: {
     // Where to build results
     path: path.join(__dirname, 'docs'),
 
     // Filename to use in HTML
-    filename: 'webpack-bundle.js'
+    filename: '[name].js'
   },
   devtool: 'cheap-source-map',
   plugins: [
@@ -21,8 +26,15 @@ module.exports = {
       './docs'
     ]), */
     new HtmlWebpackPlugin({
-      template: 'index.html', // Load a custom template
-      inject: 'body' // Inject all scripts into the body
+      template: 'index.html',
+      inject: 'body',
+      excludeChunks: ['svgLibraryLoader']
+    }),
+    new WebpackShellPlugin({
+      onBuildExit: [
+        './node_modules/uglify-js/bin/uglifyjs docs/mure.js -c -m -o docs/mure.min.js',
+        './node_modules/uglify-js/bin/uglifyjs docs/svgLibraryLoader.js -c -m -o docs/svgLibraryLoader.min.js'
+      ]
     })
   ],
   module: {

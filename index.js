@@ -1,24 +1,17 @@
 import * as d3 from 'd3';
 
-import BoilerplateView from './BoilerplateView';
-
-import './style/colors.scss';
 import './style/layout.scss';
-// note that we import this *after* our stylesheets; if we didn't, we'd need to
-// import recolorImages from './lib/recolorImages'; and call recolorImages()
-// after all the stylesheets were loaded
-import './lib/recolorImages';
 
-let myView;
-
-function resize () {
-  myView.render();
-}
+window.d3 = d3; // strap d3 to the window for debugging console access
 
 function setup () {
-  // Example of a view
-  myView = new BoilerplateView();
-  myView.render(d3.select('#boilerplateViewContainer'));
+  let demo = d3.select('#demo');
+  let svg = d3.select(demo.node().contentDocument).select('svg');
+  let nativeBounds = svg.node().getBoundingClientRect();
+  demo.attrs({
+    width: nativeBounds.width,
+    height: nativeBounds.height
+  });
+  demo.node().focus();
 }
-window.onload = setup;
-window.onresize = resize;
+window.onload = window.onresize = setup;
