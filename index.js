@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
 
 import './style/layout.scss';
+import './style/toolbars.scss';
+import './lib/recolorImages.js';
 
 window.d3 = d3; // strap d3 to the window for debugging console access
 

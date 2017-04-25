@@ -34,8 +34,19 @@ $LightBrown: #F1E2CC;
 Color meanings:
 */
 
-$darkUiColor: $DarkGrey;
-$lightUiColor: $LightestGrey;
+$darkPageColor: $DarkGrey;
+$lightPageColor: $White;
+
+$panelColor: $DarkPurple;
+$lightPanelColor: $LightPurple;
+$darkPanelColor: darken($panelColor, 30%);
+
+$accentColor: $DarkYellow;
+$lightAccentColor: $LightYellow;
+
+$bindingColor: $DarkTeal;
+$encodingColor: $DarkPurple;
+$interactionColor: $DarkOrange;
 
 /*
 Function to get the ID of an SVG color-changing filter
