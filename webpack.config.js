@@ -28,7 +28,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html',
       inject: 'body',
-      excludeChunks: ['svgLibraryLoader']
+      excludeChunks: ['mure', 'svgLibraryLoader']
     }),
     new WebpackShellPlugin({
       onBuildExit: [

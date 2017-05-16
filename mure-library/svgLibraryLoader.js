@@ -41,7 +41,7 @@ function load (url, callback) {
   xhr.send('');
 }
 
-function loadLibraries (callback) {
+function loadUserLibraries (callback) {
   // Grab all the mure:library tags, and load the referenced library (script src attributes
   // in SVG don't work, so we have to manually load remote libraries)
   let libraries = Array.from(document.getElementsByTagNameNS('http://mure-apps.github.io', 'library'))
@@ -89,5 +89,5 @@ if (window.parent !== window && window.parent.mure) {
 } else {
   // We've been loaded directly into a browser, or embedded in a normal page;
   // load all the libraries, and then run all the scripts
-  loadLibraries(runUserScripts);
+  loadUserLibraries(runUserScripts);
 }

@@ -1,12 +1,12 @@
-/* globals mure */
-
+import mure from './mure-library/mure.js';
 import * as d3 from 'd3';
+
+window.mure = mure; // strap mure to the window so that loaded SVG files know that they're being edited
+window.d3 = d3; // strap d3 to the window for debugging console access
 
 import './style/layout.scss';
 import './style/toolbars.scss';
 import './lib/recolorImages.js';
-
-window.d3 = d3; // strap d3 to the window for debugging console access
 
 function renderMenu (menuId, menuData) {
   let menu = d3.select(menuId);
@@ -45,6 +45,9 @@ function buildAppMenu () {
 }
 
 function setup () {
+  mure.loadUserLibraries = true;
+  mure.runUserScripts = true;
+
   let demo = d3.select('#demo');
   let svg = d3.select(demo.node().contentDocument).select('svg');
   let nativeBounds = svg.node().getBoundingClientRect();

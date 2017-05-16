@@ -19,14 +19,19 @@ class Mure {
     })[0];
     // Create / load the local database of files
     this.localdb = new PouchDB('mure');
+
+    this.loadUserLibraries = false;
+    this.runUserScripts = false;
   }
   openApp (appName) {
     console.log('todo: switch to ' + this.apps[appName]);
   }
   signalSvgLoaded (childWindow) {
-    // TODO: optionally don't load the libraries / run the scripts specified in
-    // the SVG file
-    childWindow.loadLibraries(childWindow.runUserScripts);
+    // Only load the SVG's linked libraries + embedded scripts if we've been told to
+    let callback = this.runUserScripts ? childWindow.runUserScripts : () => {};
+    if (this.loadUserLibraries) {
+      childWindow.loadUserLibraries(callback);
+    }
   }
 }
 

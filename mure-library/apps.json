@@ -2,7 +2,7 @@
   "Mure": {
     "debug_directory": "mure-apps.github.io",
     "debug_port": 8080,
-    "public_url": "http://mure-apps.github.io",
+    "public_url": "http://mure-apps.github.io/docs",
     "icon": "Mure.svg"
   },
   "File manager": {
