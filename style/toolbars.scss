@@ -1,111 +1,172 @@
 @import './colors.scss';
 
 $buttonSize: 2.5em;
-$panelSize: calc(#{$buttonSize} + 2px);
 $buttonImageSize: 1.5em;
+$buttonPadding: 0.25em;
 $borderRadius: 0.5em;
 
-.toolbar {
+nav.toolbar {
   position: fixed;
-  padding: 0.25em 0.125em;
-  display: flex;
 
   background-color: $darkPanelColor;
   border: 1px solid $darkPanelColor;
   box-shadow: 0 0 0.25em $darkPanelColor;
-  border-radius: $borderRadius;
 
   &.top,
   &.bottom {
-    height: $panelSize;
+    height: calc(#{$buttonSize} + 2 * #{$buttonPadding});
     left: 50%;
     transform: translate(-50%, 0%);
-    flex-direction: row;
+    max-width: 100%;
+    ul {
+      width: 100%;
+      flex-direction: row;
+      padding: $buttonPadding calc(#{$buttonPadding} / 2);
+      li.button {
+        margin: 0 calc(#{$buttonPadding} / 2);
+      }
+    }
   }
   &.top {
     top: 0px;
+    border-bottom-left-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
+    ul li.button:hover label {
+      top: calc(#{$buttonSize} + 0.5em);
+      left: calc(#{$buttonSize / 2});
+      transform: translate(-50%, 0);
+    }
   }
   &.bottom {
     bottom: 0px;
+    border-top-left-radius: $borderRadius;
+    border-top-right-radius: $borderRadius;
+    ul li.button:hover label {
+      bottom: calc(#{$buttonSize} + 0.5em);
+      left: calc(#{$buttonSize / 2});
+      transform: translate(-50%, 0);
+    }
   }
   &.left,
   &.right {
-    width: $panelSize;
+    width: calc(#{$buttonSize} + 2 * #{$buttonPadding});
     top: 50%;
     transform: translate(0%, -50%);
-    flex-direction: column;
+    max-height: 100%;
+    ul {
+      height: 100%;
+      flex-direction: column;
+      padding: calc(#{$buttonPadding} / 2) $buttonPadding;
+      li.button {
+        margin: calc(#{$buttonPadding} / 2) 0;
+      }
+    }
   }
   &.left {
     left: 0px;
+    border-top-right-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
+    ul li.button:hover label {
+      top: calc(#{$buttonSize / 2} - 0.9em);
+      left: calc(#{$buttonSize} + 1em);
+    }
   }
   &.right {
     right: 0px;
+    border-top-left-radius: $borderRadius;
+    border-bottom-left-radius: $borderRadius;
+    ul li.button:hover label {
+      top: calc(#{$buttonSize / 2} - 0.9em);
+      right: calc(#{$buttonSize} + 1em);
+    }
+  }
+  &.floating {
+    border-radius: $borderRadius;
+    ul li.button:hover label {
+      top: calc(#{$buttonSize} + 0.5em);
+      left: calc(#{$buttonSize / 2});
+      transform: translate(-50%, 0);
+    }
   }
 
-  .button {
-    position: relative;
-    display: block;
-    width: $buttonSize;
-    height: $buttonSize;
-    margin: 0 0.125em;
-    cursor: pointer;
-    background: linear-gradient(to bottom, rgba($lightPanelColor,0.1) 0%,rgba($panelColor,0) 40%,rgba($darkPanelColor,0.1) 100%);
-    border: 1px solid darken($darkPanelColor, 10%);
-    border-radius: $borderRadius;
+  ul {
+    display: flex;
+    margin: 0px;
+    list-style: none;
 
-    img {
-      position: absolute;
-      left: calc(#{$buttonSize / 2} - #{$buttonImageSize / 2});
-      top: calc(#{$buttonSize / 2} - #{$buttonImageSize / 2});
-      width: $buttonImageSize;
-      height: $buttonImageSize;
-      filter: imgColorFilter($accentColor);
-    }
+    li.button {
+      position: relative;
+      display: block;
+      width: $buttonSize;
+      height: $buttonSize;
+      cursor: pointer;
+      background: $darkPanelColor;
+      border: 1px solid darken($darkPanelColor, 10%);
+      border-radius: $borderRadius;
+      overflow: hidden;
 
-    label {
-      display: none;
-    }
-
-    &:hover {
-      background: linear-gradient(to bottom, rgba($lightPanelColor,0.5) 0%,rgba($panelColor,0.25) 40%,rgba($darkPanelColor,1) 100%);
-      border: 1px solid $Black;
-
-      label {
-        display: block;
+      a {
         position: absolute;
-        padding: 0.25em 0.5em;
-        border-radius: $borderRadius;
+        width: 100%;
+        height: 100%;
 
-        background-color: $darkPanelColor;
-        color: $accentColor;
-        white-space: nowrap;
-        border: 1px solid $darkPanelColor;
-        box-shadow: 0 0 0.25em $darkPanelColor;
+        background: linear-gradient(to bottom, rgba($lightPanelColor,0.1) 0%,rgba($panelColor,0) 40%,rgba($darkPanelColor,0.1) 100%);
 
-        @at-root .right.toolbar .button:hover label {
-          top: calc(#{$buttonSize / 2} - 0.9em);
-          right: calc(#{$buttonSize} + 1em);
+        img {
+          position: absolute;
+          left: calc(#{$buttonSize / 2} - #{$buttonImageSize / 2});
+          top: calc(#{$buttonSize / 2} - #{$buttonImageSize / 2});
+          width: $buttonImageSize;
+          height: $buttonImageSize;
+          filter: imgColorFilter($accentColor);
         }
-        @at-root .left.toolbar .button:hover label {
-          top: calc(#{$buttonSize / 2} - 0.9em);
-          left: calc(#{$buttonSize} + 1em);
-        }
-        @at-root .top.toolbar .button:hover label {
-          top: calc(#{$buttonSize} + 0.5em);
-          left: calc(#{$buttonSize / 2});
-          transform: translate(-50%, 0);
-        }
-        @at-root .bottom.toolbar .button:hover label {
-          bottom: calc(#{$buttonSize} + 0.5em);
-          left: calc(#{$buttonSize / 2});
-          transform: translate(-50%, 0);
+
+        label {
+          display: none;
         }
       }
-    }
 
-    &:active {
-      background: linear-gradient(to bottom, rgba($darkPanelColor,1) 0%,rgba($panelColor,0.25) 40%,rgba($lightPanelColor,0.5) 100%);
-      border: 1px solid $Black;
+      &:hover {
+        border: 1px solid $Black;
+        a {
+          background: linear-gradient(to bottom, rgba($lightPanelColor,0.5) 0%,rgba($panelColor,0.25) 40%,rgba($darkPanelColor,1) 100%);
+
+          label {
+            display: block;
+            position: absolute;
+            padding: 0.25em 0.5em;
+            border-radius: $borderRadius;
+
+            background-color: $darkPanelColor;
+            color: $accentColor;
+            white-space: nowrap;
+            border: 1px solid $darkPanelColor;
+            box-shadow: 0 0 0.25em $darkPanelColor;
+          }
+        }
+      }
+      &:active {
+        border: 1px solid $Black;
+        a {
+          background: linear-gradient(to bottom, rgba($darkPanelColor,1) 0%,rgba($panelColor,0.25) 40%,rgba($lightPanelColor,0.5) 100%);
+        }
+      }
+
+      &.selected {
+        background: $accentColor;
+        a {
+          background: linear-gradient(to bottom, rgba($lightAccentColor,0.3) 0%,rgba($accentColor,0) 40%,rgba($darkAccentColor,0.3) 100%);
+          img {
+            filter: imgColorFilter($darkPanelColor);
+          }
+        }
+        &:hover a {
+          background: linear-gradient(to bottom, rgba($lightAccentColor,0.5) 0%,rgba($accentColor,0.25) 40%,rgba($darkAccentColor,1) 100%);
+        }
+        &:active a {
+          background: linear-gradient(to bottom, rgba($darkAccentColor,1) 0%,rgba($accentColor,0.25) 40%,rgba($lightAccentColor,0.5) 100%);
+        }
+      }
     }
   }
 }

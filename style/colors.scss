@@ -43,6 +43,7 @@ $darkPanelColor: darken($panelColor, 30%);
 
 $accentColor: $DarkYellow;
 $lightAccentColor: $LightYellow;
+$darkAccentColor: darken($accentColor, 30%);
 
 $bindingColor: $DarkTeal;
 $encodingColor: $DarkPurple;

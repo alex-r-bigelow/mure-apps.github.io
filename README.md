@@ -8,7 +8,12 @@ Setup:
 
 Development:
 ============
+
+To just test out the main page:
     webpack-dev-server --progress
+
+To run all the apps, clone each repository in the parent directory containing this one, and run:
+    bash serveFullSystem.sh
 
 Deployment:
 ===========

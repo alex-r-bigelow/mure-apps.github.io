@@ -1,18 +1,52 @@
 @import './colors.scss';
 
-html {
+html,
+body {
   margin: 0;
   padding: 0;
 }
 
-body {
-  margin: 10em;
-  padding: 0;
-  background-color: $darkPageColor;
+#mainSection,
+#previewSection {
+  position: absolute;
+  overflow: auto;
 }
-iframe {
-  display: block;
-  margin: auto;
-  background-color: $White;
-  border: 1px solid black;
+
+@media (max-width: 30em) {
+  #mainSection {
+    left: 1em;
+    top: 1em;
+    bottom: 1em;
+    right: 1em;
+  }
+
+  #previewSection {
+    display: none;
+  }
+}
+@media (min-width: 30em) {
+  #mainSection {
+    left: 4em;
+    top: 4em;
+    bottom: 4em;
+    width: calc(50% - 2em);
+  }
+
+  #previewSection {
+    right: 4em;
+    top: 4em;
+    bottom: 4em;
+    width: calc(50% - 2em);
+  }
+}
+
+#mainSection {
+  img {
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+  }
+  h1 {
+    display: inline-block;
+  }
 }

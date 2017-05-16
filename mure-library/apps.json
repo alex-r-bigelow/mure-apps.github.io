@@ -1,0 +1,14 @@
+{
+  "Mure": {
+    "debug_directory": "mure-apps.github.io",
+    "debug_port": 8080,
+    "public_url": "http://mure-apps.github.io",
+    "icon": "Mure.svg"
+  },
+  "File manager": {
+    "debug_directory": "my-es6-boilerplate",
+    "debug_port": 8081,
+    "public_url": "http://mure-apps.github.io/file-manager",
+    "icon": "File manager.svg"
+  }
+}

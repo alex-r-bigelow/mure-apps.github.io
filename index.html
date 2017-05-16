@@ -6,24 +6,22 @@
       // from master (no option to switch to the docs folder in Github's settings)...
       // so we do it manually
       if (window.location.href === 'https://mure-apps.github.io/') {
-        window.location = 'https://mure-apps.github.io/docs/';
+        window.location = 'https://mure-apps.github.io/docs' + window.location.search + window.location.hash;
       }
     </script>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <link rel="icon" type="image/png" href="img/mureLogo.png"/>
+    <link rel="icon" type="image/png" href="img/Mure.png"/>
     <title>Mure</title>
   </head>
   <body>
-    <iframe id="demo" src="demo.svg"></iframe>
-    <div id="files" class="bottom toolbar">
-      <a class="button">
-        <img src="img/zoomIn.svg"/>
-        <label>Zoom in</label>
-      </a>
-      <a class="button">
-        <img src="img/zoomOut.svg"/>
-        <label>Zoom out</label>
-      </a>
+    <div id="mainSection">
+      <img src="./img/Mure.svg"/>
+      <h1>Mure</h1>
     </div>
+    <div id="previewSection">
+      <iframe id="demo" src="demo.svg"></iframe>
+    </div>
+    <nav id="appMenu" class="top toolbar"><ul></ul></nav>
+    <nav id="currentFileMenu" class="bottom toolbar"><ul></ul></nav>
   </body>
 </html>
