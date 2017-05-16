@@ -47,21 +47,6 @@ function loadLibraries (callback) {
   let libraries = Array.from(document.getElementsByTagNameNS('http://mure-apps.github.io', 'library'))
     .map(libraryTag => libraryTag.getAttribute('src'));
 
-  // This is a funky check to see whether we're actually debugging mure.js locally, or if
-  // this is the normal use case where we should just stick with the hosted version
-  let mureLibraryIndex = libraries.indexOf('https://mure-apps.github.io/docs/mure.min.js');
-  if (mureLibraryIndex !== -1) {
-    let parentLibraries = [];
-    if (window.parent !== window) {
-      parentLibraries = Array.from(window.parent.document.getElementsByTagName('script'))
-        .filter(scriptTag => scriptTag.getAttribute('src') === 'mure.js');
-    }
-    if (parentLibraries.length !== 0) {
-      // swap the hosted library for the debugging one
-      libraries[mureLibraryIndex] = 'mure.js';
-    }
-  }
-
   let loadedLibraries = {};
   let onloadFired = false;
 
@@ -96,4 +81,13 @@ function runUserScripts () {
     .forEach(scriptTag => eval(scriptTag.textContent));
 }
 
-loadLibraries(runUserScripts);
+if (window.parent !== window && window.parent.mure) {
+  // This SVG is getting edited in a mure app! In that case, the parent mure library
+  // is responsible to figure out whether or not our libraries / scripts should
+  // even be loaded
+  window.parent.mure.signalSvgLoaded(window);
+} else {
+  // We've been loaded directly into a browser, or embedded in a normal page;
+  // load all the libraries, and then run all the scripts
+  loadLibraries(runUserScripts);
+}

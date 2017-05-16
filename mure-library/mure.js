@@ -23,6 +23,11 @@ class Mure {
   openApp (appName) {
     console.log('todo: switch to ' + this.apps[appName]);
   }
+  signalSvgLoaded (childWindow) {
+    // TODO: optionally don't load the libraries / run the scripts specified in
+    // the SVG file
+    childWindow.loadLibraries(childWindow.runUserScripts);
+  }
 }
 
 let mure = new Mure();
