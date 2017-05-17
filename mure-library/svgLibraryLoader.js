@@ -78,7 +78,7 @@ function loadUserLibraries (callback) {
 
 function runUserScripts () {
   Array.from(document.getElementsByTagNameNS('http://mure-apps.github.io', 'script'))
-    .forEach(scriptTag => eval(scriptTag.textContent));
+    .forEach(scriptTag => window.eval(scriptTag.textContent));
 }
 
 if (window.parent !== window && window.parent.mure) {

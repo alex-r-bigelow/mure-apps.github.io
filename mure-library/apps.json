@@ -6,7 +6,7 @@
     "icon": "Mure.svg"
   },
   "File manager": {
-    "debug_directory": "my-es6-boilerplate",
+    "debug_directory": "file-manager",
     "debug_port": 8081,
     "public_url": "http://mure-apps.github.io/file-manager",
     "icon": "File manager.svg"

@@ -23,15 +23,24 @@ class Mure {
     this.loadUserLibraries = false;
     this.runUserScripts = false;
   }
-  openApp (appName) {
-    console.log('todo: switch to ' + this.apps[appName]);
-  }
   signalSvgLoaded (childWindow) {
     // Only load the SVG's linked libraries + embedded scripts if we've been told to
     let callback = this.runUserScripts ? childWindow.runUserScripts : () => {};
     if (this.loadUserLibraries) {
       childWindow.loadUserLibraries(callback);
     }
+  }
+  openApp (appName) {
+    console.log('todo: switch to ' + this.apps[appName]);
+  }
+  loadSvg (fileName, iframe) {
+
+  }
+  uploadSvg () {
+
+  }
+  downloadSvg () {
+
   }
 }
 

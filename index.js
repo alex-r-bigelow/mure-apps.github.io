@@ -8,6 +8,9 @@ import './style/layout.scss';
 import './style/toolbars.scss';
 import './lib/recolorImages.js';
 
+mure.loadUserLibraries = true;
+mure.runUserScripts = true;
+
 function renderMenu (menuId, menuData) {
   let menu = d3.select(menuId);
   let menuItems = menu.select('ul').selectAll('li').data(menuData);
@@ -45,9 +48,6 @@ function buildAppMenu () {
 }
 
 function setup () {
-  mure.loadUserLibraries = true;
-  mure.runUserScripts = true;
-
   let demo = d3.select('#demo');
   let svg = d3.select(demo.node().contentDocument).select('svg');
   let nativeBounds = svg.node().getBoundingClientRect();
