@@ -10,7 +10,7 @@ module.exports = {
   entry: {
     'webpack-bundle': './index.js',
     'mure': './mure-library/mure.js',
-    'svgLibraryLoader': './mure-library/svgLibraryLoader.js'
+    'mureInteractivityRunner': './mure-library/mureInteractivityRunner.js'
   },
 
   output: {
@@ -28,12 +28,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html',
       inject: 'body',
-      excludeChunks: ['mure', 'svgLibraryLoader']
+      excludeChunks: ['mure', 'mureInteractivityRunner']
     }),
     new WebpackShellPlugin({
       onBuildExit: [
         './node_modules/uglify-js/bin/uglifyjs docs/mure.js -c -m -o docs/mure.min.js',
-        './node_modules/uglify-js/bin/uglifyjs docs/svgLibraryLoader.js -c -m -o docs/svgLibraryLoader.min.js'
+        './node_modules/uglify-js/bin/uglifyjs docs/mureInteractivityRunner.js -c -m -o docs/mureInteractivityRunner.min.js'
       ]
     })
   ],

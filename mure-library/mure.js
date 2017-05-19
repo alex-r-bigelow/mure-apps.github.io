@@ -23,11 +23,11 @@ class Mure {
     this.loadUserLibraries = false;
     this.runUserScripts = false;
   }
-  signalSvgLoaded (childWindow) {
+  signalSvgLoaded (loadUserLibrariesFunc, runUserScriptsFunc) {
     // Only load the SVG's linked libraries + embedded scripts if we've been told to
-    let callback = this.runUserScripts ? childWindow.runUserScripts : () => {};
+    let callback = this.runUserScripts ? runUserScriptsFunc : () => {};
     if (this.loadUserLibraries) {
-      childWindow.loadUserLibraries(callback);
+      loadUserLibrariesFunc(callback);
     }
   }
   openApp (appName) {

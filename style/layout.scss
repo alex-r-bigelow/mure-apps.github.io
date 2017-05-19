@@ -15,8 +15,8 @@ body {
 @media (max-width: 30em) {
   #mainSection {
     left: 1em;
-    top: 1em;
-    bottom: 1em;
+    top: 4em;
+    bottom: 4em;
     right: 1em;
   }
 
@@ -29,14 +29,30 @@ body {
     left: 4em;
     top: 4em;
     bottom: 4em;
-    width: calc(50% - 2em);
+    width: calc(50% - 6em);
   }
 
   #previewSection {
     right: 4em;
     top: 4em;
     bottom: 4em;
-    width: calc(50% - 2em);
+    width: calc(50% - 6em);
+    border: 1px solid $panelColor;
+    border-radius: 0.5em;
+
+    &:focus {
+      border: 1px solid $accentColor;
+    }
+
+    iframe {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      border: none;
+      overflow: scroll;
+    }
   }
 }
 

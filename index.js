@@ -6,6 +6,7 @@ window.d3 = d3; // strap d3 to the window for debugging console access
 
 import './style/layout.scss';
 import './style/toolbars.scss';
+import './style/scrollbars.scss';
 import './lib/recolorImages.js';
 
 mure.loadUserLibraries = true;
@@ -48,12 +49,16 @@ function buildAppMenu () {
 }
 
 function setup () {
+  // CSS doesn't let us resize the iframe...
+  let bounds = d3.select('#previewSection').node().getBoundingClientRect();
   let demo = d3.select('#demo');
-  let svg = d3.select(demo.node().contentDocument).select('svg');
-  let nativeBounds = svg.node().getBoundingClientRect();
+  let demoContent = demo.node().contentDocument.documentElement;
+  if (demoContent) {
+    bounds = demoContent.getBoundingClientRect();
+  }
   demo.attrs({
-    width: nativeBounds.width,
-    height: nativeBounds.height
+    width: bounds.width,
+    height: bounds.height
   });
   demo.node().focus();
 

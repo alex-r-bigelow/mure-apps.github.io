@@ -6,26 +6,22 @@
       // from master (no option to switch to the docs folder in Github's settings)...
       // so we do it manually
       if (window.location.href === 'https://mure-apps.github.io/') {
-        window.location = 'https://mure-apps.github.io/docs/';
+        window.location = 'https://mure-apps.github.io/docs' + window.location.search + window.location.hash;
       }
     </script>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <link rel="icon" type="image/png" href="img/mureLogo.png"/>
+    <link rel="icon" type="image/png" href="img/Mure.png"/>
     <title>Mure</title>
   </head>
   <body>
-    <iframe id="demo" src="demo.svg"></iframe>
-    <div id="files" class="toolbar"></div>
-    <div id="viewControls" class="toolbar">
-      <a class="button">
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHRpdGxlPkFzc2V0IDI8L3RpdGxlPjxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPjxnIGlkPSJCYWNrZ3JvdW5kIj48cGF0aCBkPSJNMTgsMEExOCwxOCwwLDEsMCwzNiwxOCwxOCwxOCwwLDAsMCwxOCwwWk0yOS40OSwyMEgyMHY5LjU0SDE2VjIwSDYuNTFWMTZIMTZWNi40NWg0VjE2aDkuNTRaIi8+PC9nPjwvZz48L3N2Zz4="/>
-        <label>Zoom in</label>
-      </a>
-      <a class="button">
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHRpdGxlPkFzc2V0IDM8L3RpdGxlPjxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPjxnIGlkPSJCYWNrZ3JvdW5kIj48cGF0aCBkPSJNMTgsMEExOCwxOCwwLDEsMCwzNiwxOCwxOCwxOCwwLDAsMCwxOCwwWm05LjYyLDIwSDguMzdWMTZIMjcuNjNaIi8+PC9nPjwvZz48L3N2Zz4="/>
-        <label>Zoom out</label>
-      </a>
+    <div id="mainSection">
+      <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIxLjAuMiwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6I0U2QUIwMjt9Cgkuc3Qxe29wYWNpdHk6MC4zO2ZpbGw6Izc1NzBCMztlbmFibGUtYmFja2dyb3VuZDpuZXcgICAgO30KCS5zdDJ7b3BhY2l0eTowLjQ1O2ZpbGw6I0U2QUIwMjtlbmFibGUtYmFja2dyb3VuZDpuZXcgICAgO30KCS5zdDN7b3BhY2l0eTowLjU1O2ZpbGw6Izc1NzBCMztlbmFibGUtYmFja2dyb3VuZDpuZXcgICAgO30KCS5zdDR7b3BhY2l0eTowLjI7ZmlsbDojRTZBQjAyO2VuYWJsZS1iYWNrZ3JvdW5kOm5ldyAgICA7fQoJLnN0NXtmaWxsOiM3NTcwQjM7fQo8L3N0eWxlPgo8cG9seWdvbiBjbGFzcz0ic3QwIiBwb2ludHM9IjMzOS4zLDQwNy4zIDI1Niw1MDYgMTcyLjcsNDA3LjMgIi8+Cjxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iMjE0LjEsMzcyLjIgMjk3LjUsMjczLjUgMzgwLjgsMzcyLjIgIi8+Cjxwb2x5Z29uIGNsYXNzPSJzdDIiIHBvaW50cz0iNTA2LDI3My41IDQyMi43LDM3Mi4yIDMzOS4zLDI3My41ICIvPgo8cG9seWdvbiBjbGFzcz0ic3QzIiBwb2ludHM9IjI1NiwyMzguNSAzMzkuMywxMzkuOCA0MjIuNywyMzguNSAiLz4KPHBvbHlnb24gY2xhc3M9InN0MiIgcG9pbnRzPSIyNTYsMjczLjUgMTcyLjcsMzcyLjIgODkuMywyNzMuNSAiLz4KPHBvbHlnb24gY2xhc3M9InN0MyIgcG9pbnRzPSI2LDIzOC41IDg5LjMsMTM5LjggMTcyLjcsMjM4LjUgIi8+Cjxwb2x5Z29uIGNsYXNzPSJzdDQiIHBvaW50cz0iMjk3LjUsMTM5LjggMjE0LjEsMjM4LjUgMTMwLjgsMTM5LjggIi8+Cjxwb2x5Z29uIGNsYXNzPSJzdDUiIHBvaW50cz0iMTcyLjcsMTA0LjcgMjU2LDYgMzM5LjMsMTA0LjcgIi8+Cjwvc3ZnPgo="/>
+      <h1>Mure</h1>
     </div>
-    <div id="applications" class="toolbar"></div>
-  <script type="text/javascript" src="webpack-bundle.js"></script><script type="text/javascript" src="mure.js"></script></body>
+    <div id="previewSection">
+      <iframe id="demo" src="demo.svg"></iframe>
+    </div>
+    <nav id="appMenu" class="top toolbar"><ul></ul></nav>
+    <nav id="currentFileMenu" class="bottom toolbar"><ul></ul></nav>
+  <script type="text/javascript" src="webpack-bundle.js"></script></body>
 </html>

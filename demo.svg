@@ -1,12 +1,12 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:mure="http://mure-apps.github.io" width="600" height="1920">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="600" height="1920">
   <metadata id="mure">
-    <mure:interactivity>
-      <mure:library src="https://d3js.org/d3.v4.min.js"></mure:library>
-      <mure:library src="https://code.jquery.com/jquery-2.2.4.min.js"></mure:library>
-      <mure:script>
+    <mure xmlns="http://mure-apps.github.io">
+      <library src="https://d3js.org/d3.v4.min.js"></library>
+      <library src="https://code.jquery.com/jquery-2.2.4.min.js"></library>
+      <script>
         <![CDATA[
-          function clickCircle (element, event) {
-            console.log(arguments);
+          function logData (element) {
+            console.log(mureInteractivity.getData(element));
           }
 
           var KEY = { w: 87, a: 65, s: 83, d: 68 };
@@ -31,9 +31,166 @@
             }
           });
         ]]>
-      </mure:script>
-      <script id="mureLibraryLoader" type="text/javascript">
-        <![CDATA[
+      </script>
+      <constraint id="xScale">
+        <mapping>
+          <key>Cake</key>
+          <value>20</value>
+        </mapping>
+        <mapping>
+          <key>Raised</key>
+          <value>30</value>
+        </mapping>
+        <mapping>
+          <key>Buttermilk</key>
+          <value>40</value>
+        </mapping>
+        <mapping>
+          <key>Bar</key>
+          <value>50</value>
+        </mapping>
+        <mapping>
+          <key>Twist</key>
+          <value>60</value>
+        </mapping>
+        <mapping>
+          <key>Filled</key>
+          <value>70</value>
+        </mapping>
+        <key lookup="binding/data">/name</key>
+        <value lookup="binding/graphic">@x</value>
+      </constraint>
+      <constraint id="yScale">
+        <scale>
+          <domain>
+            <low>0</low>
+            <high>1</high>
+          </domain>
+          <range>
+            <low>500</low>
+            <high>0</high>
+          </range>
+        </scale>
+        <key lookup="binding/data">/ppu</key>
+        <value lookup="binding/graphic">@y</value>
+      </constraint>
+      <binding>
+        <data>/svg/metadata[@id='mure']/mure/dataset[@id='donuts']/items/item[@id='0001']</data>
+        <graphic>/svg/g[@id='chart']/g[@id='bars']/rect[@id='rect1']</graphic>
+        <constraint>/svg/metadata[@id='mure']/mure/constraint[@id='xScale']</constraint>
+      </binding>
+      <dataset id="donuts" xmlns="http://mure-apps.github.io/dataset">
+        <items>
+          <item id="0001" type="donut">
+            <name>Cake</name>
+            <ppu>0.55</ppu>
+            <batters>
+              <batter id="1001">Regular</batter>
+              <batter id="1002">Chocolate</batter>
+              <batter id="1003">Blueberry</batter>
+              <batter id="1003">Devil's Food</batter>
+            </batters>
+            <topping id="5001">None</topping>
+            <topping id="5002">Glazed</topping>
+            <topping id="5005">Sugar</topping>
+            <topping id="5007">Powdered Sugar</topping>
+            <topping id="5006">Chocolate with Sprinkles</topping>
+            <topping id="5003">Chocolate</topping>
+            <topping id="5004">Maple</topping>
+          </item>
+          <item id="0002" type="donut">
+            <name>Raised</name>
+            <ppu>0.55</ppu>
+            <batters>
+              <batter id="1001">Regular</batter>
+            </batters>
+            <topping id="5001">None</topping>
+            <topping id="5002">Glazed</topping>
+            <topping id="5005">Sugar</topping>
+            <topping id="5003">Chocolate</topping>
+            <topping id="5004">Maple</topping>
+          </item>
+          <item id="0003" type="donut">
+            <name>Buttermilk</name>
+            <ppu>0.55</ppu>
+            <batters>
+              <batter id="1001">Regular</batter>
+              <batter id="1002">Chocolate</batter>
+            </batters>
+          </item>
+          <item id="0004" type="bar">
+            <name>Bar</name>
+            <ppu>0.75</ppu>
+            <batters>
+              <batter id="1001">Regular</batter>
+            </batters>
+            <topping id="5003">Chocolate</topping>
+            <topping id="5004">Maple</topping>
+            <fillings>
+              <filling id="7001">
+                <name>None</name>
+                <addcost>0</addcost>
+              </filling>
+              <filling id="7002">
+                <name>Custard</name>
+                <addcost>0.25</addcost>
+              </filling>
+              <filling id="7003">
+                <name>Whipped Cream</name>
+                <addcost>0.25</addcost>
+              </filling>
+            </fillings>
+          </item>
+          <item id="0005" type="twist">
+            <name>Twist</name>
+            <ppu>0.65</ppu>
+            <batters>
+              <batter id="1001">Regular</batter>
+            </batters>
+            <topping id="5002">Glazed</topping>
+            <topping id="5005">Sugar</topping>
+          </item>
+          <item id="0006" type="filled">
+            <name>Filled</name>
+            <ppu>0.75</ppu>
+            <batters>
+              <batter id="1001">Regular</batter>
+            </batters>
+            <topping id="5002">Glazed</topping>
+            <topping id="5007">Powdered Sugar</topping>
+            <topping id="5003">Chocolate</topping>
+            <topping id="5004">Maple</topping>
+            <fillings>
+              <filling id="7002">
+                <name>Custard</name>
+                <addcost>0</addcost>
+              </filling>
+              <filling id="7003">
+                <name>Whipped Cream</name>
+                <addcost>0</addcost>
+              </filling>
+              <filling id="7004">
+                <name>Strawberry Jelly</name>
+                <addcost>0</addcost>
+              </filling>
+              <filling id="7005">
+                <name>Rasberry Jelly</name>
+                <addcost>0</addcost>
+              </filling>
+            </fillings>
+          </item>
+        </items>
+      </dataset>
+    </mure>
+    <script id="mureInteractivityRunner" type="text/javascript">
+      <![CDATA[
+        var mureInteractivity = {
+          getData: function () {
+            return 'TODO';
+          }
+        };
+
+        (function () {
           function load (url, callback) {
             let xhr;
             if (typeof XMLHttpRequest !== 'undefined') {
@@ -86,7 +243,7 @@
 
             libraries.forEach(function (script) {
               load(script, function (scriptText) {
-                eval(scriptText);
+                window.eval(scriptText);
                 loadedLibraries[script] = true;
                 attemptStart();
               });
@@ -115,19 +272,20 @@
               .forEach(scriptTag => window.eval(scriptTag.textContent));
           }
 
+          // Where we actually start executing stuff:
           if (window.parent !== window && window.parent.mure) {
             // This SVG is getting edited in a mure app! In that case, the parent mure library
             // is responsible to figure out whether or not our libraries / scripts should
             // even be loaded
-            window.parent.mure.signalSvgLoaded(window);
+            window.parent.mure.signalSvgLoaded(loadUserLibraries, runUserScripts);
           } else {
             // We've been loaded directly into a browser, or embedded in a normal page;
             // load all the libraries, and then run all the scripts
             loadUserLibraries(runUserScripts);
           }
-        ]]>
-      </script>
-    </mure:interactivity>
+        })();
+      ]]>
+    </script>
   </metadata>
-  <circle cx="250" cy="250" r="50" fill="red" mure:data='{"hi":"there"}' onclick="clickCircle(this, event)"/>
+  <circle cx="250" cy="250" r="50" fill="transparent" stroke="lightGrey" onclick="logData(this)"/>
 </svg>
