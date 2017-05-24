@@ -1,4 +1,5 @@
 @import './colors.scss';
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:700|Josefin+Slab:600');
 
 html,
 body {
@@ -6,63 +7,103 @@ body {
   padding: 0;
 }
 
-#mainSection,
-#previewSection {
-  position: absolute;
-  overflow: auto;
+body {
+  display: block !important;  /* a hack to get around webpack stylesheet loading order issues */
+  color: $textColor;
+  background-color: $pageBackground;
+  font-family: 'Josefin Slab', serif;
 }
-
-@media (max-width: 30em) {
-  #mainSection {
-    left: 1em;
-    top: 4em;
-    bottom: 4em;
-    right: 1em;
-  }
-
-  #previewSection {
-    display: none;
-  }
-}
-@media (min-width: 30em) {
-  #mainSection {
-    left: 4em;
-    top: 4em;
-    bottom: 4em;
-    width: calc(50% - 6em);
-  }
-
-  #previewSection {
-    right: 4em;
-    top: 4em;
-    bottom: 4em;
-    width: calc(50% - 6em);
-    border: 1px solid $panelColor;
-    border-radius: 0.5em;
-
-    &:focus {
-      border: 1px solid $accentColor;
-    }
-
-    iframe {
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      right: 0px;
-      bottom: 0px;
-      border: none;
-      overflow: scroll;
-    }
-  }
+#backgroundGradient {
+  position: fixed;
+  top: -1em;
+  bottom: -1em;
+  left: -1em;
+  right: -1em;
+  background: linear-gradient(-100deg, rgba(95,93,145,1) 0%,rgba(102,100,147,1) 23%,rgba(28,28,33,1) 100%);
 }
 
 #mainSection {
+  position: absolute;
   img {
     display: inline-block;
     width: 3em;
     height: 3em;
   }
   h1 {
+    font-family: 'Josefin Sans', sans-serif;
+    color: $accentColor;
     display: inline-block;
+  }
+  hr {
+    height: 1px;
+    border: none;
+    background-color: $separatorColor;
+  }
+
+  #allFiles {
+    position: absolute;
+    overflow: auto;
+    list-style: none;
+    margin: 0px;
+    right: 0em;
+    top: 10em;
+
+    /* settings for mobile */
+
+    left: 3em;  /* leave 4em for a scrolling target */
+    bottom: 6em;
+  }
+
+  /* settings for mobile */
+  left: 1em;
+  top: 4em;
+  bottom: 4em;
+  width: calc(100% - 1em);
+}
+
+#previewSection {
+  position: absolute;
+  overflow: auto;
+  border: 1px solid $separatorColor;
+  background-color: $White;
+  border-radius: 0.5em;
+
+  iframe {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    border: none;
+    overflow: scroll;
+  }
+
+  /* settings for mobile */
+  top: calc(100vh - 6em);
+  right: 0em;
+  left: 4em;  /* leave 4em for a scrolling target */
+  bottom: calc(-100vh + 10em);
+  margin-bottom: 4em;
+}
+
+@media only screen and (min-width: 768px) {
+  /* overrides for desktop */
+  #mainSection {
+    #allFiles {
+      bottom: 0em;
+      left: 0em;
+    }
+    left: 4em;
+    top: 4em;
+    bottom: 4em;
+    width: calc(500px - 8em);
+  }
+
+  #previewSection {
+    right: 4em;
+    top: 4em;
+    bottom: 4em;
+    left: 500px;
+    margin-bottom: 0em;
   }
 }
