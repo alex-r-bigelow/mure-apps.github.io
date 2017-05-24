@@ -19,7 +19,7 @@ function renderMenu (menuId, menuData) {
   let menuItemsEnter = menuItems.enter().append('li');
   let menuItemLinksEnter = menuItemsEnter.append('a');
   menuItemLinksEnter.append('img');
-  menuItemLinksEnter.append('label');
+  menuItemsEnter.append('label');
 
   menuItems = menuItemsEnter.merge(menuItems);
 
@@ -28,7 +28,7 @@ function renderMenu (menuId, menuData) {
   let menuItemLinks = menuItems.select('a');
 
   menuItemLinks.select('img').attr('src', d => d.icon);
-  menuItemLinks.select('label').text(d => d.label);
+  menuItems.select('label').text(d => d.label);
 
   menuItems.on('click', function (d) {
     d.onclick.call(this, d);
