@@ -18,10 +18,14 @@ class Mure {
       }
     })[0];
     // Create / load the local database of files
-    this.localdb = new PouchDB('mure');
+    this.db = new PouchDB('mure');
 
     this.loadUserLibraries = false;
     this.runUserScripts = false;
+  }
+  alert (message) {
+    // TODO: more user-friendly warnings?
+    console.warn(message);
   }
   signalSvgLoaded (loadUserLibrariesFunc, runUserScriptsFunc) {
     // Only load the SVG's linked libraries + embedded scripts if we've been told to
@@ -33,13 +37,30 @@ class Mure {
   openApp (appName) {
     console.log('todo: switch to ' + this.apps[appName]);
   }
-  loadSvg (fileName, iframe) {
+  loadSvg (filename, iframe) {
 
   }
-  uploadSvg () {
-
+  uploadSvg (fileObj) {
+    this.db.get(fileObj.name).then(existingDoc => {
+      console.log('exists', existingDoc);
+    }).catch(errorObj => {
+      if (errorObj.message === 'missing') {
+        // The file doesn't exist, so just add it
+        let dbEntry = {
+          _id: fileObj.name,
+          _attachments: {}
+        };
+        dbEntry._attachments[fileObj.name] = {
+          content_type: fileObj.type,
+          data: fileObj
+        };
+        this.db.put(dbEntry);
+      } else {
+        this.alert('Unexpected error reading PouchDB: ' + errorObj.message);
+      }
+    });
   }
-  downloadSvg () {
+  downloadSvg (filename) {
 
   }
 }

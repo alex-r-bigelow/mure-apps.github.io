@@ -48,6 +48,28 @@ function buildAppMenu () {
   });
 }
 
+let fileMenu = [
+  {
+    label: 'Upload',
+    icon: require('./img/upload.svg'),
+    onclick: () => {
+      let inputField = d3.select('body')
+        .append('input')
+        .attr('type', 'file')
+        .property('multiple', true)
+        .attr('accept', '.svg')
+        .style('display', 'none')
+        .on('change', () => {
+          Array.from(inputField.node().files).forEach(fileObj => {
+            mure.uploadSvg(fileObj);
+          });
+          inputField.remove();
+        });
+      inputField.node().click();
+    }
+  }
+];
+
 function setup () {
   // CSS doesn't let us resize the iframe...
   let bounds = d3.select('#previewSection').node().getBoundingClientRect();
@@ -63,5 +85,6 @@ function setup () {
   demo.node().focus();
 
   renderMenu('#appMenu', buildAppMenu());
+  renderMenu('#currentFileMenu', fileMenu);
 }
 window.onload = window.onresize = setup;
