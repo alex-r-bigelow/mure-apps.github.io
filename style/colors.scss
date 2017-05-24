@@ -34,8 +34,9 @@ $LightBrown: #F1E2CC;
 Color meanings:
 */
 
-$darkPageColor: $DarkGrey;
-$lightPageColor: $White;
+$pageBackground: darken($DarkPurple, 45%);
+$textColor: $LightPurple;
+$separatorColor: $DarkGrey;
 
 $panelColor: $DarkPurple;
 $lightPanelColor: $LightPurple;

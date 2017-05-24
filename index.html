@@ -13,10 +13,14 @@
     <link rel="icon" type="image/png" href="img/Mure.png"/>
     <title>Mure</title>
   </head>
-  <body>
+  <body style="display:none"><!-- the display:none thing is a hack to get around webpack stylesheet loading order issues-->
+    <div id="backgroundGradient"></div>
     <div id="mainSection">
       <img src="./img/Mure.svg"/>
       <h1>Mure</h1>
+      <hr/>
+      <h2>Your files:</h2>
+      <ul id="allFiles"></ul>
     </div>
     <div id="previewSection">
       <iframe id="demo" src="demo.svg"></iframe>
