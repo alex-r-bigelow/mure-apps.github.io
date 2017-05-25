@@ -1,13 +1,14 @@
 import mure from './mure-library/mure.js';
 import * as d3 from 'd3';
 
-window.mure = mure; // strap mure to the window so that loaded SVG files know that they're being edited
 window.d3 = d3; // strap d3 to the window for debugging console access
 
 import './style/layout.scss';
 import './style/toolbars.scss';
 import './style/scrollbars.scss';
 import './lib/recolorImages.js';
+
+import trashCanIcon from './img/trashCanIcon.svg';
 
 mure.loadUserLibraries = true;
 mure.runUserScripts = true;
@@ -70,6 +71,23 @@ let fileOpsMenu = [
   }
 ];
 
+function renderUserFiles (fileList) {
+  let allFiles = d3.select('#allFiles').selectAll('li')
+    .data(fileList, d => d);
+  allFiles.exit().remove();
+
+  let allFilesEnter = allFiles.enter().append('li')
+    .classed('button', true);
+  allFilesEnter.append('span');
+  allFilesEnter.append('a').append('img')
+    .attr('src', trashCanIcon);
+
+  allFiles = allFiles.merge(allFilesEnter);
+
+  allFiles.select('span').text(d => d);
+  allFiles.select('a').on('click', d => { mure.deleteSvg(d); });
+}
+
 function setup () {
   // CSS doesn't let us resize the iframe...
   let previewBounds = d3.select('#previewSection').node().getBoundingClientRect();
@@ -96,5 +114,7 @@ function setup () {
 
   renderMenu('#appMenu', buildAppMenu());
   renderMenu('#fileOpsMenu', fileOpsMenu);
+  mure.getFileList().then(renderUserFiles);
+  mure.on('fileListChange', renderUserFiles);
 }
 window.onload = window.onresize = setup;

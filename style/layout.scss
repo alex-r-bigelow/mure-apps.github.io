@@ -48,6 +48,21 @@ body {
     right: 0em;
     top: 10em;
 
+    li {
+      position: relative;
+      margin: 0px;
+      a {
+        position: absolute;
+        right: 0px;
+        cursor: pointer;
+
+        img {
+          height: 2em;
+          width: 2em;
+        }
+      }
+    }
+
     /* settings for mobile */
 
     left: 3em;  /* leave 4em for a scrolling target */
