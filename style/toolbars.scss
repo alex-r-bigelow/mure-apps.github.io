@@ -80,7 +80,7 @@ $borderRadius: 0.5em;
 nav.toolbar {
   position: fixed;
 
-  background-color: $darkPanelColor;
+  background-color: rgba($darkPanelColor, 0.5);
   border: 1px solid $Black;
   box-shadow: 0 0 0.25em $Black;
 

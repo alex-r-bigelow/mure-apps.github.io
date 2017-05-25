@@ -8,6 +8,11 @@ import './style/toolbars.scss';
 import './style/scrollbars.scss';
 import './lib/recolorImages.js';
 
+import gearIcon from './img/gearIcon.svg';
+import newFileIcon from './img/newFileIcon.svg';
+import uploadIcon from './img/upload.svg';
+import downloadIcon from './img/download.svg';
+import openFileIcon from './img/openFileIcon.svg';
 import trashCanIcon from './img/trashCanIcon.svg';
 
 mure.loadUserLibraries = true;
@@ -51,8 +56,22 @@ function buildAppMenu () {
 
 let fileOpsMenu = [
   {
+    label: 'Settings',
+    icon: gearIcon,
+    onclick: () => {
+      console.log('todo: settings dialog');
+    }
+  },
+  {
+    label: 'New File',
+    icon: newFileIcon,
+    onclick: () => {
+      console.log('todo: create a new SVG file');
+    }
+  },
+  {
     label: 'Upload',
-    icon: require('./img/upload.svg'),
+    icon: uploadIcon,
     onclick: () => {
       let inputField = d3.select('body')
         .append('input')
@@ -79,6 +98,23 @@ function renderUserFiles (fileList) {
   let allFilesEnter = allFiles.enter().append('li');
   allFilesEnter.append('span')
     .classed('fileTitle', true);
+
+  let openButtonsEnter = allFilesEnter.append('div')
+    .classed('open', true)
+    .classed('button', true);
+  openButtonsEnter.append('a').append('img')
+    .attr('src', openFileIcon);
+  openButtonsEnter.append('label')
+    .text('Open');
+
+  let downloadButtonsEnter = allFilesEnter.append('div')
+    .classed('download', true)
+    .classed('button', true);
+  downloadButtonsEnter.append('a').append('img')
+    .attr('src', downloadIcon);
+  downloadButtonsEnter.append('label')
+    .text('Download');
+
   let deleteButtonsEnter = allFilesEnter.append('div')
     .classed('delete', true)
     .classed('button', true);
