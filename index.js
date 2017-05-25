@@ -76,16 +76,21 @@ function renderUserFiles (fileList) {
     .data(fileList, d => d);
   allFiles.exit().remove();
 
-  let allFilesEnter = allFiles.enter().append('li')
+  let allFilesEnter = allFiles.enter().append('li');
+  allFilesEnter.append('span')
+    .classed('fileTitle', true);
+  let deleteButtonsEnter = allFilesEnter.append('div')
+    .classed('delete', true)
     .classed('button', true);
-  allFilesEnter.append('span');
-  allFilesEnter.append('a').append('img')
+  deleteButtonsEnter.append('a').append('img')
     .attr('src', trashCanIcon);
+  deleteButtonsEnter.append('label')
+    .text('Delete');
 
   allFiles = allFiles.merge(allFilesEnter);
 
-  allFiles.select('span').text(d => d);
-  allFiles.select('a').on('click', d => { mure.deleteSvg(d); });
+  allFiles.select('.fileTitle').text(d => d);
+  allFiles.select('.delete').select('a').on('click', d => { mure.deleteSvg(d); });
 }
 
 function setup () {
