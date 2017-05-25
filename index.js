@@ -48,7 +48,7 @@ function buildAppMenu () {
   });
 }
 
-let fileMenu = [
+let fileOpsMenu = [
   {
     label: 'Upload',
     icon: require('./img/upload.svg'),
@@ -72,9 +72,10 @@ let fileMenu = [
 
 function setup () {
   // CSS doesn't let us resize the iframe...
-  let bounds = d3.select('#previewSection').node().getBoundingClientRect();
+  let previewBounds = d3.select('#previewSection').node().getBoundingClientRect();
   let demo = d3.select('#demo');
   let demoContent = demo.node().contentDocument.documentElement;
+  let bounds = previewBounds;
   if (demoContent) {
     bounds = demoContent.getBoundingClientRect();
   }
@@ -82,9 +83,18 @@ function setup () {
     width: bounds.width,
     height: bounds.height
   });
+  // While we're at it, might as well do some centering that CSS can't handle:
+  let leftRightMargin = bounds.width < previewBounds.width ? 'auto' : null;
+  let topBottomMargin = bounds.height < previewBounds.height ? 'auto' : null;
+  demo.styles({
+    'margin-left': leftRightMargin,
+    'margin-right': leftRightMargin,
+    'margin-top': topBottomMargin,
+    'margin-bottom': topBottomMargin
+  });
   demo.node().focus();
 
   renderMenu('#appMenu', buildAppMenu());
-  renderMenu('#currentFileMenu', fileMenu);
+  renderMenu('#fileOpsMenu', fileOpsMenu);
 }
 window.onload = window.onresize = setup;

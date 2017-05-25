@@ -65,7 +65,7 @@ body {
   position: absolute;
   overflow: auto;
   border: 1px solid $separatorColor;
-  background-color: $White;
+  background-color: $pageBackground;
   border-radius: 0.5em;
 
   iframe {
@@ -76,6 +76,7 @@ body {
     bottom: 0px;
     border: none;
     overflow: scroll;
+    background-color: white;
   }
 
   /* settings for mobile */
