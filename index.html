@@ -16,10 +16,12 @@
   <body style="display:none"><!-- the display:none thing is a hack to get around webpack stylesheet loading order issues-->
     <div id="backgroundGradient"></div>
     <div id="mainSection">
-      <img src="./img/Mure.svg"/>
-      <h1>Mure</h1>
+      <div id="titleWrapper">
+        <img src="./img/Mure.svg"/>
+        <h1>Mure</h1>
+        <h2>composable data visualization</h2>
+      </div>
       <hr/>
-      <h2>Your files:</h2>
       <ul id="allFiles"></ul>
     </div>
     <div id="previewSection">

@@ -24,15 +24,80 @@ body {
 
 #mainSection {
   position: absolute;
-  img {
-    display: inline-block;
-    width: 3em;
+  #titleWrapper {
+    position: relative;
     height: 3em;
-  }
-  h1 {
-    font-family: 'Josefin Sans', sans-serif;
-    color: $accentColor;
-    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+
+    @keyframes slideInFromLeft {
+      0% {
+        left: -3em;
+      }
+      100% {
+        left: 0em;
+      }
+    }
+    img {
+      display: inline-block;
+      width: 3em;
+      height: 3em;
+      position:absolute;
+      top: 0em;
+      left: 0em;
+      animation-name: slideInFromLeft;
+      animation-delay: 0.5s;
+      animation-duration: 0.5s;
+      animation-timing-function: ease;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+    }
+    @keyframes slideInFromTop {
+      0% {
+        top: -1.75em;
+      }
+      100% {
+        top: 0em;
+      }
+    }
+    h1 {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 1.75em;
+      color: $accentColor;
+      display: inline-block;
+      margin: 0em;
+      position: absolute;
+      left: 2em;
+      top: 0em;
+      animation-name: slideInFromTop;
+      animation-delay: 1.5s;
+      animation-duration: 0.5s;
+      animation-timing-function: ease;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+    }
+    @keyframes slideInFromBottom {
+      0% {
+        bottom: -1.75em;
+      }
+      100% {
+        bottom: 0em;
+      }
+    }
+    h2 {
+      font-size: 1em;
+      display: inline-block;
+      position: absolute;
+      margin: 0em;
+      left: 3em;
+      bottom: 0em;
+      animation-name: slideInFromBottom;
+      animation-delay: 3s;
+      animation-duration: 0.5s;
+      animation-timing-function: ease;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+    }
   }
   hr {
     height: 1px;
@@ -47,7 +112,7 @@ body {
     margin: 0px;
     padding: 0px;
     right: 0em;
-    top: 10em;
+    top: 4.25em;
 
     li {
       position: relative;
