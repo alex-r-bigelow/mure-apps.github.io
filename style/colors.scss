@@ -35,6 +35,7 @@ Color meanings:
 */
 
 $pageBackground: darken($DarkPurple, 45%);
+$backgroundGradient: linear-gradient(-100deg, rgba(95,93,145,1) 0%,rgba(102,100,147,1) 23%,rgba(28,28,33,1) 100%);
 $textColor: $LightPurple;
 $separatorColor: $DarkGrey;
 

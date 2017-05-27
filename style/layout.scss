@@ -19,7 +19,7 @@ body {
   bottom: -1em;
   left: -1em;
   right: -1em;
-  background: linear-gradient(-100deg, rgba(95,93,145,1) 0%,rgba(102,100,147,1) 23%,rgba(28,28,33,1) 100%);
+  background: $backgroundGradient;
 }
 
 #mainSection {

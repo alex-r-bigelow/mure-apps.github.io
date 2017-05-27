@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 
 window.d3 = d3; // strap d3 to the window for debugging console access
 
+import { NewFileDialog } from './Dialog';
+
 import './style/layout.scss';
 import './style/toolbars.scss';
 import './style/scrollbars.scss';
@@ -66,7 +68,7 @@ let fileOpsMenu = [
     label: 'New File',
     icon: newFileIcon,
     onclick: () => {
-      console.log('todo: create a new SVG file');
+      new NewFileDialog().render();
     }
   },
   {
