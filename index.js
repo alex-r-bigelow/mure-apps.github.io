@@ -17,6 +17,9 @@ import downloadIcon from './img/download.svg';
 import openFileIcon from './img/openFileIcon.svg';
 import trashCanIcon from './img/trashCanIcon.svg';
 
+import demoSvgText from '!raw-loader!./demo.svg';
+let demoBlob = new window.Blob([demoSvgText], { type: 'image/svg+xml' });
+
 mure.loadUserLibraries = true;
 mure.runUserScripts = true;
 
@@ -116,7 +119,7 @@ function renderUserFiles (fileList) {
         mure.getFileList().then(renderUserFiles);
       });
     });
-  mure.getCurrentFile().then(currentFile => {
+  mure.getCurrentFilename().then(currentFile => {
     openButtons.classed('selected', d => d === currentFile);
   });
 
@@ -143,14 +146,33 @@ function renderUserFiles (fileList) {
   allFiles.select('.delete').select('a').on('click', d => { mure.deleteSvg(d); });
 }
 
-function setup () {
+function resizeIFrame () {
+  let demo = d3.select('#demo');
   // CSS doesn't let us resize the iframe...
   let previewBounds = d3.select('#previewSection').node().getBoundingClientRect();
-  let demo = d3.select('#demo');
   let demoContent = demo.node().contentDocument.documentElement;
   let bounds = previewBounds;
   if (demoContent) {
-    bounds = demoContent.getBoundingClientRect();
+    // First try to get width / height from the SVG tag's attributes
+    bounds = {
+      width: parseInt(demoContent.getAttribute('width')),
+      height: parseInt(demoContent.getAttribute('height'))
+    };
+    if (isNaN(bounds.width) || isNaN(bounds.height)) {
+      // Next, try using the viewBox attribute
+      let viewBox = demoContent.getAttribute('viewBox');
+      if (viewBox) {
+        viewBox = viewBox.split(/\s/);
+        bounds = {
+          width: parseInt(viewBox[2]),
+          height: parseInt(viewBox[3])
+        };
+      }
+    }
+    if (isNaN(bounds.width) || isNaN(bounds.height)) {
+      // Finally, just resort to however large the browser renders it natively
+      bounds = demoContent.getBoundingClientRect();
+    }
   }
   demo.attrs({
     width: bounds.width,
@@ -165,11 +187,25 @@ function setup () {
     'margin-top': topBottomMargin,
     'margin-bottom': topBottomMargin
   });
-  demo.node().focus();
+}
 
+function renderFile (currentFileBlob) {
+  currentFileBlob = currentFileBlob || demoBlob;
+  let demo = d3.select('#demo');
+  demo.attr('src', window.URL.createObjectURL(currentFileBlob));
+  demo.node().focus();
+}
+
+function setup () {
+  d3.select('#demo')
+    .on('load', resizeIFrame);
   renderMenu('#appMenu', buildAppMenu());
   renderMenu('#fileOpsMenu', fileOpsMenu);
   mure.getFileList().then(renderUserFiles);
   mure.on('fileListChange', renderUserFiles);
+  mure.on('fileChange', renderFile);
+  mure.getCurrentFilename().then(filename => {
+    mure.getFile(filename).then(renderFile);
+  });
 }
 window.onload = window.onresize = setup;

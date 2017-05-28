@@ -50,13 +50,18 @@ class Mure extends Model {
   setCurrentFile (filename) {
     return this.db.get('userPrefs').then(prefs => {
       prefs.currentFile = filename;
-      return this.db.put(prefs);
+      return this.db.put(prefs).then(() => {
+        this.triggerFileChange();
+      });
     }).catch(this.catchDbError);
   }
-  getCurrentFile () {
+  getCurrentFilename () {
     return this.db.get('userPrefs').then(prefs => {
       return prefs.currentFile;
     });
+  }
+  getFile (filename) {
+    return this.db.getAttachment(filename, filename);
   }
   signalSvgLoaded (loadUserLibrariesFunc, runUserScriptsFunc) {
     // Only load the SVG's linked libraries + embedded scripts if we've been told to
@@ -103,6 +108,7 @@ class Mure extends Model {
       if (errorObj.message === 'missing') {
         // the file doesn't exist yet...
         return this.db.put(dbEntry).then(putResponse => {
+          this.triggerFileChange();
           this.triggerFileListChange();
           return putResponse;
         });
@@ -122,6 +128,18 @@ class Mure extends Model {
         });
         return result;
       }).catch(this.catchDbError);
+  }
+  triggerFileChange () {
+    return this.getCurrentFilename().then(filename => {
+      if (filename) {
+        return this.getFile(filename).then(fileBlob => {
+          this.trigger('fileChange', fileBlob);
+        });
+      } else {
+        this.trigger('fileChange', null);
+        return Promise.resolve(null);
+      }
+    });
   }
   triggerFileListChange () {
     return this.getFileList().then(fileList => {
@@ -167,7 +185,7 @@ class Mure extends Model {
   }
   deleteSvg (filename) {
     if (this.confirm.call(window, 'Are you sure you want to delete ' + filename + '?')) {
-      return Promise.all([this.db.get(filename), this.getCurrentFile()]).then(promiseResults => {
+      return Promise.all([this.db.get(filename), this.getCurrentFilename()]).then(promiseResults => {
         let existingDoc = promiseResults[0];
         let currentFile = promiseResults[1];
         return this.db.remove(existingDoc._id, existingDoc._rev)
