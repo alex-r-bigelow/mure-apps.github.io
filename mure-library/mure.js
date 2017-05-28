@@ -20,7 +20,7 @@ class Mure extends Model {
       }
     })[0];
     // Create / load the local database of files
-    this.db = new PouchDB('mure');
+    this.db = this.getOrInitDb();
 
     this.loadUserLibraries = false;
     this.runUserScripts = false;
@@ -29,8 +29,34 @@ class Mure extends Model {
     this.on('error', errorMessage => { console.warn(errorMessage); });
     this.catchDbError = errorObj => { this.trigger('error', 'Unexpected error reading PouchDB: ' + errorObj.message); };
 
-    // in the absence of a custom prompt dialog box, just use window.prompt:
+    // in the absence of a custom dialogs, just use window.prompt:
     this.prompt = window.prompt;
+    this.confirm = window.confirm;
+  }
+  getOrInitDb () {
+    let db = new PouchDB('mure');
+    db.get('userPrefs').catch(errorObj => {
+      if (errorObj.message === 'missing') {
+        return db.put({
+          _id: 'userPrefs',
+          currentFile: null
+        });
+      } else {
+        this.catchDbError(errorObj);
+      }
+    });
+    return db;
+  }
+  setCurrentFile (filename) {
+    return this.db.get('userPrefs').then(prefs => {
+      prefs.currentFile = filename;
+      return this.db.put(prefs);
+    }).catch(this.catchDbError);
+  }
+  getCurrentFile () {
+    return this.db.get('userPrefs').then(prefs => {
+      return prefs.currentFile;
+    });
   }
   signalSvgLoaded (loadUserLibrariesFunc, runUserScriptsFunc) {
     // Only load the SVG's linked libraries + embedded scripts if we've been told to
@@ -48,6 +74,9 @@ class Mure extends Model {
     }
   }
   customizeConfirmDialog (showDialogFunction) {
+    this.confirm = showDialogFunction;
+  }
+  customizePromptDialog (showDialogFunction) {
     this.prompt = showDialogFunction;
   }
   openApp (appName) {
@@ -85,7 +114,13 @@ class Mure extends Model {
   getFileList () {
     return this.db.allDocs()
       .then(response => {
-        return response.rows.map(d => d.id);
+        let result = [];
+        response.rows.forEach(d => {
+          if (d.id !== 'userPrefs') {
+            result.push(d.id);
+          }
+        });
+        return result;
       }).catch(this.catchDbError);
   }
   triggerFileListChange () {
@@ -98,7 +133,9 @@ class Mure extends Model {
       .then(response => {
         let result = {};
         response.rows.forEach(d => {
-          result[d.id] = d.value.rev;
+          if (d.id !== 'userPrefs') {
+            result[d.id] = d.value.rev;
+          }
         });
         return result;
       }).catch(this.catchDbError);
@@ -122,18 +159,24 @@ class Mure extends Model {
       return filename;
     }).then(filename => {
       if (filename) {
-        this.saveSvgBlob(filename, fileObj);
+        return this.saveSvgBlob(filename, fileObj).then(() => {
+          return this.setCurrentFile(filename);
+        });
       }
     }).catch(this.catchDbError);
   }
   deleteSvg (filename) {
-    this.db.get(filename).then(existingDoc => {
-      return this.db.remove(existingDoc._id, existingDoc._rev)
-        .then(removeResponse => {
-          this.triggerFileListChange();
-          return removeResponse;
-        });
-    }).catch(this.catchDbError);
+    if (this.confirm.call(window, 'Are you sure you want to delete ' + filename + '?')) {
+      this.db.get(filename).then(existingDoc => {
+        return this.db.remove(existingDoc._id, existingDoc._rev)
+          .then(removeResponse => {
+            this.setCurrentFile(null).then(() => {
+              this.triggerFileListChange();
+            }).catch(this.catchDbError);
+            return removeResponse;
+          });
+      }).catch(this.catchDbError);
+    }
   }
   downloadSvg (filename) {
     this.getSvgBlob(filename).then(blob => {

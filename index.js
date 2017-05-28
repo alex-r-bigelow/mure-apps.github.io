@@ -101,6 +101,8 @@ function renderUserFiles (fileList) {
   allFilesEnter.append('span')
     .classed('fileTitle', true);
 
+  allFiles = allFiles.merge(allFilesEnter);
+
   let openButtonsEnter = allFilesEnter.append('div')
     .classed('open', true)
     .classed('button', true);
@@ -108,6 +110,15 @@ function renderUserFiles (fileList) {
     .attr('src', openFileIcon);
   openButtonsEnter.append('label')
     .text('Open');
+  let openButtons = allFiles.select('.open')
+    .on('click', d => {
+      mure.setCurrentFile(d).then(() => {
+        mure.getFileList().then(renderUserFiles);
+      });
+    });
+  mure.getCurrentFile().then(currentFile => {
+    openButtons.classed('selected', d => d === currentFile);
+  });
 
   let downloadButtonsEnter = allFilesEnter.append('div')
     .classed('download', true)
@@ -124,8 +135,6 @@ function renderUserFiles (fileList) {
     .attr('src', trashCanIcon);
   deleteButtonsEnter.append('label')
     .text('Delete');
-
-  allFiles = allFiles.merge(allFilesEnter);
 
   allFiles.select('.fileTitle').text(d => d);
   allFiles.select('.delete').select('a').on('click', d => { mure.deleteSvg(d); });
