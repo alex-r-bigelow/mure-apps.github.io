@@ -71,7 +71,12 @@ let fileOpsMenu = [
     label: 'New File',
     icon: newFileIcon,
     onclick: () => {
-      new NewFileDialog().render();
+      new NewFileDialog(newFileSpecs => {
+        let newFileText = '<svg width="' + newFileSpecs.width + '" height="' + newFileSpecs.height + '"></svg>';
+        let newBlob = new window.Blob([newFileText], { type: 'image/svg+xml' });
+        newBlob.name = newFileSpecs.name;
+        mure.uploadSvg(newBlob);
+      }).render();
     }
   },
   {
@@ -155,10 +160,10 @@ function resizeIFrame () {
   if (demoContent) {
     // First try to get width / height from the SVG tag's attributes
     bounds = {
-      width: parseInt(demoContent.getAttribute('width')),
-      height: parseInt(demoContent.getAttribute('height'))
+      width: demoContent.getAttribute('width'),
+      height: demoContent.getAttribute('height')
     };
-    if (isNaN(bounds.width) || isNaN(bounds.height)) {
+    if (bounds.width === null || bounds.height === null) {
       // Next, try using the viewBox attribute
       let viewBox = demoContent.getAttribute('viewBox');
       if (viewBox) {
@@ -168,17 +173,20 @@ function resizeIFrame () {
           height: parseInt(viewBox[3])
         };
       }
-    }
-    if (isNaN(bounds.width) || isNaN(bounds.height)) {
-      // Finally, just resort to however large the browser renders it natively
-      bounds = demoContent.getBoundingClientRect();
+      if (isNaN(bounds.width) || isNaN(bounds.height)) {
+        // Finally, just resort to however large the browser renders it natively
+        bounds = demoContent.getBoundingClientRect();
+      }
     }
   }
   demo.attrs({
     width: bounds.width,
     height: bounds.height
   });
-  // While we're at it, might as well do some centering that CSS can't handle:
+  // It's possible that bounds.width / bounds.height were something other than pixels,
+  // e.g. '8.5in'... so we want to get however big the browser rendered the SVG object
+  // for some centering that CSS can't handle:
+  bounds = demoContent.getBoundingClientRect();
   let leftRightMargin = bounds.width < previewBounds.width ? 'auto' : null;
   let topBottomMargin = bounds.height < previewBounds.height ? 'auto' : null;
   demo.styles({

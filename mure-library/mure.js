@@ -61,7 +61,11 @@ class Mure extends Model {
     });
   }
   getFile (filename) {
-    return this.db.getAttachment(filename, filename);
+    if (filename) {
+      return this.db.getAttachment(filename, filename);
+    } else {
+      return Promise.resolve(null);
+    }
   }
   signalSvgLoaded (loadUserLibrariesFunc, runUserScriptsFunc) {
     // Only load the SVG's linked libraries + embedded scripts if we've been told to
@@ -131,14 +135,9 @@ class Mure extends Model {
   }
   triggerFileChange () {
     return this.getCurrentFilename().then(filename => {
-      if (filename) {
-        return this.getFile(filename).then(fileBlob => {
-          this.trigger('fileChange', fileBlob);
-        });
-      } else {
-        this.trigger('fileChange', null);
-        return Promise.resolve(null);
-      }
+      return this.getFile(filename).then(fileBlob => {
+        this.trigger('fileChange', fileBlob);
+      });
     });
   }
   triggerFileListChange () {

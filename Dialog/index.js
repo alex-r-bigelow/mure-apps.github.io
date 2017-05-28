@@ -27,6 +27,10 @@ class Dialog extends View {
 }
 
 class NewFileDialog extends Dialog {
+  constructor (okCallback) {
+    super();
+    this.okCallback = okCallback;
+  }
   draw (d3el) {
     d3el.select('.modalBorder').styles({
       'width': '24em',
@@ -46,7 +50,11 @@ class NewFileDialog extends Dialog {
       .text(d => d);
 
     d3el.select('#okButton').on('click', () => {
-      console.log('todo: create a file');
+      this.okCallback({
+        name: d3el.select('#filename').node().value,
+        width: d3el.select('#width').node().value, // + d3el.select('#widthUnit').node().value,
+        height: d3el.select('#height').node().value // + d3el.select('#heightUnit').node().value
+      });
       this.close(d3el);
     });
     d3el.select('#cancelButton').on('click', () => {
