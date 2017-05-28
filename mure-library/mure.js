@@ -167,10 +167,16 @@ class Mure extends Model {
   }
   deleteSvg (filename) {
     if (this.confirm.call(window, 'Are you sure you want to delete ' + filename + '?')) {
-      this.db.get(filename).then(existingDoc => {
+      return Promise.all([this.db.get(filename), this.getCurrentFile()]).then(promiseResults => {
+        let existingDoc = promiseResults[0];
+        let currentFile = promiseResults[1];
         return this.db.remove(existingDoc._id, existingDoc._rev)
           .then(removeResponse => {
-            this.setCurrentFile(null).then(() => {
+            let p = Promise.resolve();
+            if (filename === currentFile) {
+              p = this.setCurrentFile(null);
+            }
+            p.then(() => {
               this.triggerFileListChange();
             }).catch(this.catchDbError);
             return removeResponse;
@@ -196,6 +202,7 @@ class Mure extends Model {
 
 Mure.VALID_EVENTS = {
   fileListChange: true,
+  fileChange: true,
   error: true,
   svgLoaded: true
 };

@@ -127,6 +127,9 @@ function renderUserFiles (fileList) {
     .attr('src', downloadIcon);
   downloadButtonsEnter.append('label')
     .text('Download');
+  allFiles.select('.download').on('click', d => {
+    mure.downloadSvg(d);
+  });
 
   let deleteButtonsEnter = allFilesEnter.append('div')
     .classed('delete', true)
