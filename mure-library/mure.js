@@ -27,7 +27,7 @@ class Mure extends Model {
 
     // default error handling (apps can listen for / display error messages in addition to this):
     this.on('error', errorMessage => { console.warn(errorMessage); });
-    this.catchDbError = errorObj => { this.trigger('error', 'Unexpected error reading PouchDB: ' + errorObj.message); };
+    this.catchDbError = errorObj => { this.trigger('error', 'Unexpected error reading PouchDB:\n' + errorObj.stack); };
 
     // in the absence of a custom dialogs, just use window.prompt:
     this.prompt = window.prompt;
@@ -95,7 +95,7 @@ class Mure extends Model {
       content_type: blob.type,
       data: blob
     };
-    this.db.get(filename).then(existingDoc => {
+    return this.db.get(filename).then(existingDoc => {
       // the file exists... overwrite the document
       dbEntry._rev = existingDoc._rev;
       return this.db.put(dbEntry);
@@ -145,7 +145,7 @@ class Mure extends Model {
     return this.getFileRevisions().then(revisionDict => {
       // Ask multiple times if the user happens to enter another filename that already exists
       while (revisionDict[filename]) {
-        let newName = this.prompt(
+        let newName = this.prompt.call(window,
           fileObj.name + ' already exists. Pick a new name, or leave it the same to overwrite:',
           fileObj.name);
         if (!newName) {

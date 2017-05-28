@@ -38,6 +38,7 @@
       position: absolute;
       padding: 0.25em 0.5em;
       border-radius: $borderRadius;
+      z-index: 100;
 
       background-color: $darkPanelColor;
       color: $accentColor;
