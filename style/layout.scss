@@ -22,126 +22,11 @@ body {
   background: $backgroundGradient;
 }
 
-#mainSection {
+#mainView {
   position: absolute;
-  #titleWrapper {
-    position: relative;
-    height: 3em;
-    width: 100%;
-    overflow: hidden;
-
-    @keyframes slideInFromLeft {
-      0% {
-        left: -3em;
-      }
-      100% {
-        left: 0em;
-      }
-    }
-    img {
-      display: inline-block;
-      width: 3em;
-      height: 3em;
-      position:absolute;
-      top: 0em;
-      left: 0em;
-      animation-name: slideInFromLeft;
-      animation-delay: 0.5s;
-      animation-duration: 0.5s;
-      animation-timing-function: ease;
-      animation-iteration-count: 1;
-      animation-fill-mode: both;
-    }
-    @keyframes slideInFromTop {
-      0% {
-        top: -1.75em;
-      }
-      100% {
-        top: 0em;
-      }
-    }
-    h1 {
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 1.75em;
-      color: $accentColor;
-      display: inline-block;
-      margin: 0em;
-      position: absolute;
-      left: 2em;
-      top: 0em;
-      animation-name: slideInFromTop;
-      animation-delay: 1.5s;
-      animation-duration: 0.5s;
-      animation-timing-function: ease;
-      animation-iteration-count: 1;
-      animation-fill-mode: both;
-    }
-    @keyframes slideInFromBottom {
-      0% {
-        bottom: -1.75em;
-      }
-      100% {
-        bottom: 0em;
-      }
-    }
-    h2 {
-      font-size: 1em;
-      display: inline-block;
-      position: absolute;
-      margin: 0em;
-      left: 3em;
-      bottom: 0em;
-      animation-name: slideInFromBottom;
-      animation-delay: 3s;
-      animation-duration: 0.5s;
-      animation-timing-function: ease;
-      animation-iteration-count: 1;
-      animation-fill-mode: both;
-    }
-  }
-  hr {
-    height: 1px;
-    border: none;
-    background-color: $separatorColor;
-  }
 
   #allFiles {
     position: absolute;
-    overflow: auto;
-    list-style: none;
-    margin: 0px;
-    padding: 0px;
-    right: 0em;
-    top: 4.25em;
-
-    li {
-      position: relative;
-      height: 2.5em;
-      margin: 1px 0.5em 1px 1px;
-
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-
-      .fileTitle {
-        margin-right: 1em;
-      }
-
-      .button {
-        position: relative;
-        width: 2.5em;
-        height: 2.5em;
-        top: 1px;
-        margin: 0em 0.25em;
-
-        a {
-          img {
-            height: 1.5em;
-            width: 1.5em;
-          }
-        }
-      }
-    }
 
     /* settings for mobile */
 
@@ -156,23 +41,8 @@ body {
   width: calc(100% - 1em);
 }
 
-#previewSection {
+#docView {
   position: absolute;
-  overflow: auto;
-  border: 1px solid $separatorColor;
-  background-color: $pageBackground;
-  border-radius: 0.5em;
-
-  iframe {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    border: none;
-    overflow: scroll;
-    background-color: white;
-  }
 
   /* settings for mobile */
   top: calc(100vh - 6em);
@@ -182,9 +52,11 @@ body {
   margin-bottom: 4em;
 }
 
+
+
 @media only screen and (min-width: 768px) {
   /* overrides for desktop */
-  #mainSection {
+  #mainView {
     #allFiles {
       bottom: 0em;
       left: 0em;
@@ -195,7 +67,7 @@ body {
     width: calc(500px - 8em);
   }
 
-  #previewSection {
+  #docView {
     right: 4em;
     top: 4em;
     bottom: 4em;

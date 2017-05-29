@@ -15,19 +15,9 @@
   </head>
   <body style="display:none"><!-- the display:none thing is a hack to get around webpack stylesheet loading order issues-->
     <div id="backgroundGradient"></div>
-    <div id="mainSection">
-      <div id="titleWrapper">
-        <img src="./img/Mure.svg"/>
-        <h1>Mure</h1>
-        <h2>composable data visualization</h2>
-      </div>
-      <hr/>
-      <ul id="allFiles"></ul>
-    </div>
-    <div id="previewSection">
-      <iframe id="demo"></iframe>
-    </div>
-    <nav id="appMenu" class="top toolbar"><ul></ul></nav>
-    <nav id="fileOpsMenu" class="left toolbar"><ul></ul></nav>
+    <div id="mainView"></div>
+    <div id="docView"></div>
+    <nav id="appMenu" class="top toolbar"></nav>
+    <nav id="fileOpsMenu" class="left toolbar"></nav>
   </body>
 </html>
