@@ -1,14 +1,12 @@
 {
   "Mure": {
     "debug_directory": "mure-apps.github.io",
-    "debug_port": 8080,
     "public_url": "http://mure-apps.github.io/docs",
-    "icon": "Mure.svg"
+    "icon": "mure.svg"
   },
-  "File manager": {
-    "debug_directory": "file-manager",
-    "debug_port": 8081,
-    "public_url": "http://mure-apps.github.io/file-manager",
-    "icon": "File manager.svg"
+  "Data binder": {
+    "debug_directory": "mure-data-binder",
+    "public_url": "http://mure-apps.github.io/mure-data-binder",
+    "icon": "mure-data-binder.svg"
   }
 }

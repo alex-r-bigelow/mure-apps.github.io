@@ -6,9 +6,9 @@
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -67,7 +67,328 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
+/* 0 */,
+/* 1 */,
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _pouchdb = __webpack_require__(9);
+
+var _pouchdb2 = _interopRequireDefault(_pouchdb);
+
+var _apps = __webpack_require__(8);
+
+var _apps2 = _interopRequireDefault(_apps);
+
+var _index = __webpack_require__(5);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Mure = function (_Model) {
+  _inherits(Mure, _Model);
+
+  function Mure() {
+    _classCallCheck(this, Mure);
+
+    var _this = _possibleConstructorReturn(this, (Mure.__proto__ || Object.getPrototypeOf(Mure)).call(this));
+
+    _this.apps = _apps2.default;
+    // Funky stuff to figure out if we're debugging (if that's the case, we want to use
+    // localhost instead of the github link for all links)
+    var windowTitle = document.getElementsByTagName('title')[0];
+    windowTitle = windowTitle ? windowTitle.textContent : '';
+    _this.debugMode = window.location.hostname === 'localhost' && windowTitle.startsWith('Mure');
+    // Once we know whether we're debugging, figure out the current app name
+    _this.currentApp = Object.keys(_apps2.default).filter(function (d) {
+      if (_this.debugMode) {
+        return parseInt(window.location.port) === _this.apps[d].debug_port;
+      } else {
+        return window.location.href.startsWith(_this.apps[d].public_url);
+      }
+    })[0];
+    // Create / load the local database of files
+    _this.db = _this.getOrInitDb();
+
+    _this.loadUserLibraries = false;
+    _this.runUserScripts = false;
+
+    // default error handling (apps can listen for / display error messages in addition to this):
+    _this.on('error', function (errorMessage) {
+      console.warn(errorMessage);
+    });
+    _this.catchDbError = function (errorObj) {
+      _this.trigger('error', 'Unexpected error reading PouchDB:\n' + errorObj.stack);
+    };
+
+    // in the absence of a custom dialogs, just use window.prompt:
+    _this.prompt = window.prompt;
+    _this.confirm = window.confirm;
+    return _this;
+  }
+
+  _createClass(Mure, [{
+    key: 'getOrInitDb',
+    value: function getOrInitDb() {
+      var _this2 = this;
+
+      var db = new _pouchdb2.default('mure');
+      db.get('userPrefs').catch(function (errorObj) {
+        if (errorObj.message === 'missing') {
+          return db.put({
+            _id: 'userPrefs',
+            currentFile: null
+          });
+        } else {
+          _this2.catchDbError(errorObj);
+        }
+      });
+      return db;
+    }
+  }, {
+    key: 'setCurrentFile',
+    value: function setCurrentFile(filename) {
+      var _this3 = this;
+
+      return this.db.get('userPrefs').then(function (prefs) {
+        prefs.currentFile = filename;
+        return _this3.db.put(prefs).then(function () {
+          _this3.triggerFileChange();
+        });
+      }).catch(this.catchDbError);
+    }
+  }, {
+    key: 'getCurrentFilename',
+    value: function getCurrentFilename() {
+      return this.db.get('userPrefs').then(function (prefs) {
+        return prefs.currentFile;
+      });
+    }
+  }, {
+    key: 'getFile',
+    value: function getFile(filename) {
+      if (filename) {
+        return this.db.getAttachment(filename, filename);
+      } else {
+        return Promise.resolve(null);
+      }
+    }
+  }, {
+    key: 'signalSvgLoaded',
+    value: function signalSvgLoaded(loadUserLibrariesFunc, runUserScriptsFunc) {
+      // Only load the SVG's linked libraries + embedded scripts if we've been told to
+      var callback = this.runUserScripts ? runUserScriptsFunc : function () {};
+      if (this.loadUserLibraries) {
+        loadUserLibrariesFunc(callback);
+      }
+      this.trigger('svgLoaded');
+    }
+  }, {
+    key: 'on',
+    value: function on(eventName, callback) {
+      if (!Mure.VALID_EVENTS[eventName]) {
+        throw new Error('Unknown event name: ' + eventName);
+      } else {
+        _get(Mure.prototype.__proto__ || Object.getPrototypeOf(Mure.prototype), 'on', this).call(this, eventName, callback);
+      }
+    }
+  }, {
+    key: 'customizeConfirmDialog',
+    value: function customizeConfirmDialog(showDialogFunction) {
+      this.confirm = showDialogFunction;
+    }
+  }, {
+    key: 'customizePromptDialog',
+    value: function customizePromptDialog(showDialogFunction) {
+      this.prompt = showDialogFunction;
+    }
+  }, {
+    key: 'openApp',
+    value: function openApp(appName) {
+      console.log('todo: switch to ' + this.apps[appName]);
+    }
+  }, {
+    key: 'getSvgBlob',
+    value: function getSvgBlob(filename) {
+      return this.db.getAttachment(filename, filename).catch(this.catchDbError);
+    }
+  }, {
+    key: 'saveSvgBlob',
+    value: function saveSvgBlob(filename, blob) {
+      var _this4 = this;
+
+      var dbEntry = {
+        _id: filename,
+        _attachments: {}
+      };
+      dbEntry._attachments[filename] = {
+        content_type: blob.type,
+        data: blob
+      };
+      return this.db.get(filename).then(function (existingDoc) {
+        // the file exists... overwrite the document
+        dbEntry._rev = existingDoc._rev;
+        return _this4.db.put(dbEntry);
+      }).catch(function (errorObj) {
+        if (errorObj.message === 'missing') {
+          // the file doesn't exist yet...
+          return _this4.db.put(dbEntry).then(function (putResponse) {
+            _this4.triggerFileChange();
+            _this4.triggerFileListChange();
+            return putResponse;
+          });
+        } else {
+          _this4.catchDbError(errorObj);
+        }
+      });
+    }
+  }, {
+    key: 'getFileList',
+    value: function getFileList() {
+      return this.db.allDocs().then(function (response) {
+        var result = [];
+        response.rows.forEach(function (d) {
+          if (d.id !== 'userPrefs') {
+            result.push(d.id);
+          }
+        });
+        return result;
+      }).catch(this.catchDbError);
+    }
+  }, {
+    key: 'triggerFileChange',
+    value: function triggerFileChange() {
+      var _this5 = this;
+
+      return this.getCurrentFilename().then(function (filename) {
+        return _this5.getFile(filename).then(function (fileBlob) {
+          _this5.trigger('fileChange', fileBlob);
+        });
+      });
+    }
+  }, {
+    key: 'triggerFileListChange',
+    value: function triggerFileListChange() {
+      var _this6 = this;
+
+      return this.getFileList().then(function (fileList) {
+        _this6.trigger('fileListChange', fileList);
+      });
+    }
+  }, {
+    key: 'getFileRevisions',
+    value: function getFileRevisions() {
+      return this.db.allDocs().then(function (response) {
+        var result = {};
+        response.rows.forEach(function (d) {
+          if (d.id !== 'userPrefs') {
+            result[d.id] = d.value.rev;
+          }
+        });
+        return result;
+      }).catch(this.catchDbError);
+    }
+  }, {
+    key: 'uploadSvg',
+    value: function uploadSvg(fileObj) {
+      var _this7 = this;
+
+      var filename = fileObj.name;
+      return this.getFileRevisions().then(function (revisionDict) {
+        // Ask multiple times if the user happens to enter another filename that already exists
+        while (revisionDict[filename]) {
+          var newName = _this7.prompt.call(window, fileObj.name + ' already exists. Pick a new name, or leave it the same to overwrite:', fileObj.name);
+          if (!newName) {
+            return null;
+          } else if (newName === filename) {
+            return filename;
+          } else {
+            filename = newName;
+          }
+        }
+        return filename;
+      }).then(function (filename) {
+        if (filename) {
+          return _this7.saveSvgBlob(filename, fileObj).then(function () {
+            return _this7.setCurrentFile(filename);
+          });
+        }
+      }).catch(this.catchDbError);
+    }
+  }, {
+    key: 'deleteSvg',
+    value: function deleteSvg(filename) {
+      var _this8 = this;
+
+      if (this.confirm.call(window, 'Are you sure you want to delete ' + filename + '?')) {
+        return Promise.all([this.db.get(filename), this.getCurrentFilename()]).then(function (promiseResults) {
+          var existingDoc = promiseResults[0];
+          var currentFile = promiseResults[1];
+          return _this8.db.remove(existingDoc._id, existingDoc._rev).then(function (removeResponse) {
+            var p = Promise.resolve();
+            if (filename === currentFile) {
+              p = _this8.setCurrentFile(null);
+            }
+            p.then(function () {
+              _this8.triggerFileListChange();
+            }).catch(_this8.catchDbError);
+            return removeResponse;
+          });
+        }).catch(this.catchDbError);
+      }
+    }
+  }, {
+    key: 'downloadSvg',
+    value: function downloadSvg(filename) {
+      this.getSvgBlob(filename).then(function (blob) {
+        // create a fake link...
+        var a = document.createElement('a');
+        a.style = 'display:none';
+        var url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.parentNode.removeChild(a);
+      }).catch(this.catchDbError);
+    }
+  }]);
+
+  return Mure;
+}(_index2.default);
+
+Mure.VALID_EVENTS = {
+  fileListChange: true,
+  fileChange: true,
+  error: true,
+  svgLoaded: true
+};
+
+var mure = new Mure();
+window.mure = mure;
+exports.default = mure;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -141,10 +462,10 @@ function immediate(task) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 1 */
+/* 4 */
 /***/ (function(module, exports) {
 
 var g;
@@ -171,7 +492,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 2 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -183,98 +504,101 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _pouchdb = __webpack_require__(4);
+var _AbstractClass2 = __webpack_require__(11);
 
-var _pouchdb2 = _interopRequireDefault(_pouchdb);
-
-var _apps = __webpack_require__(3);
-
-var _apps2 = _interopRequireDefault(_apps);
+var _AbstractClass3 = _interopRequireDefault(_AbstractClass2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Mure = function () {
-  function Mure() {
-    var _this = this;
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-    _classCallCheck(this, Mure);
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-    this.apps = _apps2.default;
-    // Funky stuff to figure out if we're debugging (if that's the case, we want to use
-    // localhost instead of the github link for all links)
-    var windowTitle = document.getElementsByTagName('title')[0];
-    windowTitle = windowTitle ? windowTitle.textContent : '';
-    this.debugMode = window.location.hostname === 'localhost' && windowTitle.startsWith('Mure');
-    // Once we know whether we're debugging, figure out the current app name
-    this.currentApp = Object.keys(_apps2.default).filter(function (d) {
-      if (_this.debugMode) {
-        return parseInt(window.location.port) === _this.apps[d].debug_port;
-      } else {
-        return window.location.href.startsWith(_this.apps[d].public_url);
-      }
-    })[0];
-    // Create / load the local database of files
-    this.localdb = new _pouchdb2.default('mure');
+var Model = function (_AbstractClass) {
+  _inherits(Model, _AbstractClass);
 
-    this.loadUserLibraries = false;
-    this.runUserScripts = false;
+  function Model() {
+    _classCallCheck(this, Model);
+
+    var _this = _possibleConstructorReturn(this, (Model.__proto__ || Object.getPrototypeOf(Model)).call(this));
+
+    _this.eventHandlers = {};
+    return _this;
   }
 
-  _createClass(Mure, [{
-    key: 'signalSvgLoaded',
-    value: function signalSvgLoaded(loadUserLibrariesFunc, runUserScriptsFunc) {
-      // Only load the SVG's linked libraries + embedded scripts if we've been told to
-      var callback = this.runUserScripts ? runUserScriptsFunc : function () {};
-      if (this.loadUserLibraries) {
-        loadUserLibrariesFunc(callback);
+  _createClass(Model, [{
+    key: 'on',
+    value: function on(eventName, callback, allowDuplicateListeners) {
+      if (!this.eventHandlers[eventName]) {
+        this.eventHandlers[eventName] = [];
+      }
+      if (!allowDuplicateListeners) {
+        if (this.eventHandlers[eventName].indexOf(callback) !== -1) {
+          return;
+        }
+      }
+      this.eventHandlers[eventName].push(callback);
+    }
+  }, {
+    key: 'off',
+    value: function off(eventName, callback) {
+      if (this.eventHandlers[eventName]) {
+        if (!callback) {
+          delete this.eventHandlers[eventName];
+        } else {
+          var index = this.eventHandlers[eventName].indexOf(callback);
+          if (index >= 0) {
+            this.eventHandlers[eventName].splice(index, 1);
+          }
+        }
       }
     }
   }, {
-    key: 'openApp',
-    value: function openApp(appName) {
-      console.log('todo: switch to ' + this.apps[appName]);
+    key: 'trigger',
+    value: function trigger() {
+      var _this2 = this;
+
+      var eventName = arguments[0];
+      var args = Array.prototype.slice.call(arguments, 1);
+      if (this.eventHandlers[eventName]) {
+        this.eventHandlers[eventName].forEach(function (callback) {
+          window.setTimeout(function () {
+            // Add timeout to prevent blocking
+            callback.apply(_this2, args);
+          }, 0);
+        });
+      }
     }
-  }, {
-    key: 'loadSvg',
-    value: function loadSvg(fileName, iframe) {}
-  }, {
-    key: 'uploadSvg',
-    value: function uploadSvg() {}
-  }, {
-    key: 'downloadSvg',
-    value: function downloadSvg() {}
   }]);
 
-  return Mure;
-}();
+  return Model;
+}(_AbstractClass3.default);
 
-var mure = new Mure();
-window.mure = mure;
-exports.default = mure;
+exports.default = Model;
 
 /***/ }),
-/* 3 */
+/* 6 */,
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = {
 	"Mure": {
 		"debug_directory": "mure-apps.github.io",
-		"debug_port": 8080,
 		"public_url": "http://mure-apps.github.io/docs",
-		"icon": "Mure.svg"
+		"icon": "mure.svg"
 	},
-	"File manager": {
-		"debug_directory": "file-manager",
-		"debug_port": 8081,
-		"public_url": "http://mure-apps.github.io/file-manager",
-		"icon": "File manager.svg"
+	"Data binder": {
+		"debug_directory": "mure-data-binder",
+		"public_url": "http://mure-apps.github.io/mure-data-binder",
+		"icon": "mure-data-binder.svg"
 	}
 };
 
 /***/ }),
-/* 4 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -282,14 +606,14 @@ module.exports = {
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var lie = _interopDefault(__webpack_require__(9));
-var getArguments = _interopDefault(__webpack_require__(5));
-var events = __webpack_require__(7);
-var inherits = _interopDefault(__webpack_require__(8));
-var nextTick = _interopDefault(__webpack_require__(0));
-var debug = _interopDefault(__webpack_require__(11));
-var Md5 = _interopDefault(__webpack_require__(14));
-var vuvuzela = _interopDefault(__webpack_require__(16));
+var lie = _interopDefault(__webpack_require__(14));
+var getArguments = _interopDefault(__webpack_require__(10));
+var events = __webpack_require__(12);
+var inherits = _interopDefault(__webpack_require__(13));
+var nextTick = _interopDefault(__webpack_require__(3));
+var debug = _interopDefault(__webpack_require__(15));
+var Md5 = _interopDefault(__webpack_require__(19));
+var vuvuzela = _interopDefault(__webpack_require__(20));
 
 /* istanbul ignore next */
 var PouchPromise$1 = typeof Promise === 'function' ? Promise : lie;
@@ -12404,10 +12728,10 @@ PouchDB$5.plugin(IDBPouch)
 
 module.exports = PouchDB$5;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 5 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12432,8 +12756,45 @@ function argsArray(fun) {
 }
 
 /***/ }),
-/* 6 */,
-/* 7 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AbstractClass = function () {
+  function AbstractClass() {
+    _classCallCheck(this, AbstractClass);
+  }
+
+  _createClass(AbstractClass, [{
+    key: 'requireProperties',
+    value: function requireProperties(properties) {
+      var _this = this;
+
+      properties.forEach(function (m) {
+        if (_this[m] === undefined) {
+          throw new TypeError(m + ' is undefined for class ' + _this.constructor.name);
+        }
+      });
+    }
+  }]);
+
+  return AbstractClass;
+}();
+
+exports.default = AbstractClass;
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -12741,7 +13102,7 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 8 */
+/* 13 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -12770,12 +13131,12 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 9 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var immediate = __webpack_require__(0);
+var immediate = __webpack_require__(3);
 
 /* istanbul ignore next */
 function INTERNAL() {}
@@ -13030,162 +13391,7 @@ function race(iterable) {
 
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-/**
- * Helpers.
- */
-
-var s = 1000
-var m = s * 60
-var h = m * 60
-var d = h * 24
-var y = d * 365.25
-
-/**
- * Parse or format the given `val`.
- *
- * Options:
- *
- *  - `long` verbose formatting [false]
- *
- * @param {String|Number} val
- * @param {Object} options
- * @throws {Error} throw an error if val is not a non-empty string or a number
- * @return {String|Number}
- * @api public
- */
-
-module.exports = function (val, options) {
-  options = options || {}
-  var type = typeof val
-  if (type === 'string' && val.length > 0) {
-    return parse(val)
-  } else if (type === 'number' && isNaN(val) === false) {
-    return options.long ?
-			fmtLong(val) :
-			fmtShort(val)
-  }
-  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
-}
-
-/**
- * Parse the given `str` and return milliseconds.
- *
- * @param {String} str
- * @return {Number}
- * @api private
- */
-
-function parse(str) {
-  str = String(str)
-  if (str.length > 10000) {
-    return
-  }
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
-  if (!match) {
-    return
-  }
-  var n = parseFloat(match[1])
-  var type = (match[2] || 'ms').toLowerCase()
-  switch (type) {
-    case 'years':
-    case 'year':
-    case 'yrs':
-    case 'yr':
-    case 'y':
-      return n * y
-    case 'days':
-    case 'day':
-    case 'd':
-      return n * d
-    case 'hours':
-    case 'hour':
-    case 'hrs':
-    case 'hr':
-    case 'h':
-      return n * h
-    case 'minutes':
-    case 'minute':
-    case 'mins':
-    case 'min':
-    case 'm':
-      return n * m
-    case 'seconds':
-    case 'second':
-    case 'secs':
-    case 'sec':
-    case 's':
-      return n * s
-    case 'milliseconds':
-    case 'millisecond':
-    case 'msecs':
-    case 'msec':
-    case 'ms':
-      return n
-    default:
-      return undefined
-  }
-}
-
-/**
- * Short format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function fmtShort(ms) {
-  if (ms >= d) {
-    return Math.round(ms / d) + 'd'
-  }
-  if (ms >= h) {
-    return Math.round(ms / h) + 'h'
-  }
-  if (ms >= m) {
-    return Math.round(ms / m) + 'm'
-  }
-  if (ms >= s) {
-    return Math.round(ms / s) + 's'
-  }
-  return ms + 'ms'
-}
-
-/**
- * Long format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function fmtLong(ms) {
-  return plural(ms, d, 'day') ||
-    plural(ms, h, 'hour') ||
-    plural(ms, m, 'minute') ||
-    plural(ms, s, 'second') ||
-    ms + ' ms'
-}
-
-/**
- * Pluralization helper.
- */
-
-function plural(ms, n, name) {
-  if (ms < n) {
-    return
-  }
-  if (ms < n * 1.5) {
-    return Math.floor(ms / n) + ' ' + name
-  }
-  return Math.ceil(ms / n) + ' ' + name + 's'
-}
-
-
-/***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -13194,7 +13400,7 @@ function plural(ms, n, name) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(12);
+exports = module.exports = __webpack_require__(16);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -13371,10 +13577,10 @@ function localstorage() {
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -13390,7 +13596,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(10);
+exports.humanize = __webpack_require__(17);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -13582,7 +13788,162 @@ function coerce(val) {
 
 
 /***/ }),
-/* 13 */
+/* 17 */
+/***/ (function(module, exports) {
+
+/**
+ * Helpers.
+ */
+
+var s = 1000
+var m = s * 60
+var h = m * 60
+var d = h * 24
+var y = d * 365.25
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} options
+ * @throws {Error} throw an error if val is not a non-empty string or a number
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function (val, options) {
+  options = options || {}
+  var type = typeof val
+  if (type === 'string' && val.length > 0) {
+    return parse(val)
+  } else if (type === 'number' && isNaN(val) === false) {
+    return options.long ?
+			fmtLong(val) :
+			fmtShort(val)
+  }
+  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
+}
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = String(str)
+  if (str.length > 10000) {
+    return
+  }
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
+  if (!match) {
+    return
+  }
+  var n = parseFloat(match[1])
+  var type = (match[2] || 'ms').toLowerCase()
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n
+    default:
+      return undefined
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtShort(ms) {
+  if (ms >= d) {
+    return Math.round(ms / d) + 'd'
+  }
+  if (ms >= h) {
+    return Math.round(ms / h) + 'h'
+  }
+  if (ms >= m) {
+    return Math.round(ms / m) + 'm'
+  }
+  if (ms >= s) {
+    return Math.round(ms / s) + 's'
+  }
+  return ms + 'ms'
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtLong(ms) {
+  return plural(ms, d, 'day') ||
+    plural(ms, h, 'hour') ||
+    plural(ms, m, 'minute') ||
+    plural(ms, s, 'second') ||
+    ms + ' ms'
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) {
+    return
+  }
+  if (ms < n * 1.5) {
+    return Math.floor(ms / n) + ' ' + name
+  }
+  return Math.ceil(ms / n) + ' ' + name + 's'
+}
+
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -13755,6 +14116,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -13768,7 +14133,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 14 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (factory) {
@@ -14525,8 +14890,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 15 */,
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

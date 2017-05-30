@@ -1,7 +1,6 @@
 'use strict';
 
 var path = require('path');
-// var CleanWebpackPlugin = require('clean-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var WebpackShellPlugin = require('webpack-shell-plugin');
 
@@ -22,15 +21,15 @@ module.exports = {
   },
   devtool: 'cheap-source-map',
   plugins: [
-    /* new CleanWebpackPlugin([
-      './docs'
-    ]), */
     new HtmlWebpackPlugin({
       template: 'index.html',
       inject: 'body',
       excludeChunks: ['mure', 'mureInteractivityRunner']
     }),
     new WebpackShellPlugin({
+      onBuildStart: [
+        'cd lib && ../node_modules/rollup/bin/rollup -c && ../node_modules/uglify-js/bin/uglifyjs d3.js -c -m -o d3.min.js'
+      ],
       onBuildExit: [
         './node_modules/uglify-js/bin/uglifyjs docs/mure.js -c -m -o docs/mure.min.js',
         './node_modules/uglify-js/bin/uglifyjs docs/mureInteractivityRunner.js -c -m -o docs/mureInteractivityRunner.min.js'
@@ -40,22 +39,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.htaccess$|\.csv$/,
-        loader: 'file-loader'
-      },
-      {
         test: /\.scss$/,
         use: [
           'style-loader',
           'css-loader',
           'sass-loader'
-        ]
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
         ]
       },
       {

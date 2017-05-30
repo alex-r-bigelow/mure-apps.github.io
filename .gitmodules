@@ -1,0 +1,3 @@
+[submodule "apps/data-binder"]
+	path = apps/data-binder
+	url = https://github.com/mure-apps/data-binder.git
