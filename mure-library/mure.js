@@ -88,7 +88,7 @@ class Mure extends Model {
     this.prompt = showDialogFunction;
   }
   openApp (appName) {
-    window.open(appName, '_blank');
+    window.open('/' + appName, '_blank');
   }
   getSvgBlob (filename) {
     return this.db.getAttachment(filename, filename)

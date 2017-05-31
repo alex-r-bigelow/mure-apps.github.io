@@ -661,7 +661,7 @@ var Mure = function (_Model) {
   }, {
     key: 'openApp',
     value: function openApp(appName) {
-      window.open(appName, '_blank');
+      window.open('/' + appName, '_blank');
     }
   }, {
     key: 'getSvgBlob',

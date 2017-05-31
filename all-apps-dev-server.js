@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var colors = require('ansi-256-colors');
 var express = require('express');
 var webpack = require('webpack');
 var middleware = require('webpack-dev-middleware');
@@ -10,7 +11,10 @@ var app = express();
 var rootConfig = require('./webpack.config.js');
 rootConfig.output.publicPath = '/docs';
 var rootCompiler = webpack(rootConfig, () => {});
-var rootMiddleware = middleware(rootCompiler, { publicPath: '/docs' });
+var rootMiddleware = middleware(rootCompiler, {
+  publicPath: '/docs',
+  stats: { colors: true }
+});
 app.use(rootMiddleware);
 
 /* Serve the redirect to the compiled docs directory (simulates what we
@@ -43,9 +47,15 @@ fs.readdir(path.join(__dirname, 'apps'), function (err, appNames) {
       subConfig.context = path.join(__dirname, 'apps/' + appName);
       subConfig.output.publicPath = '/' + appName;
       var subCompiler = webpack(subConfig, () => {});
-      var subMiddleware = middleware(subCompiler, { publicPath: '/' + appName });
+      var subMiddleware = middleware(subCompiler, {
+        publicPath: '/' + appName,
+        stats: { colors: true }
+      });
       app.use(subMiddleware);
-    } catch (ex) {}
+      console.log(colors.fg.getRgb(1, 3, 2) + appName + ' app loaded successfully!' + colors.reset);
+    } catch (ex) {
+      console.log(colors.fg.getRgb(5, 1, 3) + 'Error loading ' + appName + ':\n' + ex.message + colors.reset);
+    }
   });
 
   // Finally, write the directory of apps to a json file for the mure library
