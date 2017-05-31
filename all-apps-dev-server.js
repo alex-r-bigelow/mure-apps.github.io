@@ -8,9 +8,14 @@ var app = express();
 
 /* Serve the root app */
 var rootConfig = require('./webpack.config.js');
+rootConfig.output.publicPath = '/docs';
 var rootCompiler = webpack(rootConfig, () => {});
-var rootMiddleware = middleware(rootCompiler, { publicPath: '/' });
+var rootMiddleware = middleware(rootCompiler, { publicPath: '/docs' });
 app.use(rootMiddleware);
+
+/* Serve the redirect to the compiled docs directory (simulates what we
+   have to do for the github organization page) */
+app.use(express.static('.'));
 
 /* serve the submodules */
 fs.readdir(path.join(__dirname, 'apps'), function (err, appNames) {

@@ -3,10 +3,10 @@
   <head>
     <script type="text/javascript">
       // Becuase this is the organization page, Github requires that the page be served
-      // from master (no option to switch to the docs folder in Github's settings)...
-      // so we do it manually
-      if (window.location.href === 'https://mure-apps.github.io/') {
-        window.location = 'https://mure-apps.github.io/docs' + window.location.search + window.location.hash;
+      // from master (no option to switch to the compiled docs folder in Github's settings)...
+      // so we do the switch manually
+      if (window.location.href.indexOf('docs') === -1) {
+        window.location = window.location.origin + '/docs' + window.location.search + window.location.hash;
       }
     </script>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
