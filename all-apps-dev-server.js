@@ -17,20 +17,37 @@ app.use(rootMiddleware);
    have to do for the github organization page) */
 app.use(express.static('.'));
 
-/* serve the submodules */
+app.listen(8080);
+
+/* Generate the app directory */
+var appDirectory = {};
 fs.readdir(path.join(__dirname, 'apps'), function (err, appNames) {
   if (err) {
     console.log('Error scanning sub apps:', err);
     process.exit();
   }
-  appNames.forEach(appName => {
-    var subConfig = require('./apps/' + appName + '/webpack.config.js');
-    subConfig.context = path.join(__dirname, 'apps/' + appName);
-    subConfig.output.publicPath = '/' + appName;
-    var subCompiler = webpack(subConfig, () => {});
-    var subMiddleware = middleware(subCompiler, { publicPath: '/' + appName });
-    app.use(subMiddleware);
-  });
-});
+  appNames.forEach(function (appName) {
+    // Validate that both package.json and webpack.config.js exist
+    try {
+      var packageJson = require(path.join(__dirname, 'apps/' + appName + '/package.json'));
+      var subConfig = require(path.join(__dirname, 'apps/' + appName + '/webpack.config.js'));
 
-app.listen(8080);
+      // Add an entry in the app directory
+      appDirectory[appName] = {
+        name: appName,
+        description: packageJson.description || '',
+        author: packageJson.author || ''
+      };
+
+      // Serve the submodule
+      subConfig.context = path.join(__dirname, 'apps/' + appName);
+      subConfig.output.publicPath = '/' + appName;
+      var subCompiler = webpack(subConfig, () => {});
+      var subMiddleware = middleware(subCompiler, { publicPath: '/' + appName });
+      app.use(subMiddleware);
+    } catch (ex) {}
+  });
+
+  // Finally, write the directory of apps to a json file for the mure library
+  fs.writeFile('./mure-library/appList.json', JSON.stringify(appDirectory, null, 2));
+});

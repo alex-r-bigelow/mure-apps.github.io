@@ -50,7 +50,7 @@ module.exports = {
         test: /\.html$/,
         loader: 'html-loader',
         query: {
-          attrs: ['img:src']
+          attrs: ['img:src', 'link:href']
         }
       },
       {

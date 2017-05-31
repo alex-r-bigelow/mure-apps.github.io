@@ -9,8 +9,8 @@ import Toolbar from './Toolbar';
 
 import { NewFileDialog } from './Dialog';
 
-import gearIcon from './img/gearIcon.svg';
-import newFileIcon from './img/newFileIcon.svg';
+import gearIcon from './img/gear.svg';
+import newFileIcon from './img/newFile.svg';
 import uploadIcon from './img/upload.svg';
 
 import './style/layout.scss';
@@ -24,16 +24,25 @@ mure.loadUserLibraries = true;
 mure.runUserScripts = true;
 
 function buildAppMenu () {
-  return d3.entries(mure.apps).map(entry => {
-    return {
-      onclick: d => {
-        mure.openApp(d.label);
+  let appMenu = [
+    {
+      onclick: () => {},
+      label: 'Mure',
+      icon: require('./img/app.svg'),
+      selected: true
+    }
+  ];
+  Object.keys(mure.appList).forEach(appName => {
+    appMenu.push({
+      onclick: () => {
+        mure.openApp(appName);
       },
-      label: entry.key,
-      icon: require('./img/' + entry.value.icon),
-      selected: entry.key === mure.currentApp
-    };
+      label: appName,
+      icon: require('./apps/' + appName + '/img/app.svg'),
+      selected: false
+    });
   });
+  return appMenu;
 }
 
 let opsMenu = [

@@ -1,24 +1,23 @@
 import PouchDB from 'pouchdb';
-import apps from './apps.json';
+import appList from './appList.json';
 import Model from '../lib/Model/index.js';
 
 class Mure extends Model {
   constructor () {
     super();
-    this.apps = apps;
+    this.appList = appList;
     // Funky stuff to figure out if we're debugging (if that's the case, we want to use
     // localhost instead of the github link for all links)
     let windowTitle = document.getElementsByTagName('title')[0];
     windowTitle = windowTitle ? windowTitle.textContent : '';
     this.debugMode = window.location.hostname === 'localhost' && windowTitle.startsWith('Mure');
-    // Once we know whether we're debugging, figure out the current app name
-    this.currentApp = Object.keys(apps).filter(d => {
-      if (this.debugMode) {
-        return parseInt(window.location.port) === this.apps[d].debug_port;
-      } else {
-        return window.location.href.startsWith(this.apps[d].public_url);
-      }
-    })[0];
+
+    // Figure out which app we are (or null if the mure library is being used somewhere else)
+    this.currentApp = window.location.pathname.replace(/\//g, '');
+    if (!this.appList[this.currentApp]) {
+      this.currentApp = null;
+    }
+
     // Create / load the local database of files
     this.db = this.getOrInitDb();
 
@@ -89,7 +88,7 @@ class Mure extends Model {
     this.prompt = showDialogFunction;
   }
   openApp (appName) {
-    console.log('todo: switch to ' + this.apps[appName]);
+    window.open(appName, '_blank');
   }
   getSvgBlob (filename) {
     return this.db.getAttachment(filename, filename)
