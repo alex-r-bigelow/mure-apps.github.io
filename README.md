@@ -30,4 +30,4 @@ If you already have the app in a repository on github (if you don't, try forking
     cd apps
     git submodule add https://github.com/your-username/your-repository.git
 
-Once this is done, `all-apps-dev-server` should automatically recognize and build your app from its `webpack.config.js` file. If you don't want to use webpack, please file an issue... I'm requiring it out of laziness for now, but that isn't how this has to be.
+Once this is done, `all-apps-dev-server` should automatically recognize and build your app from its `webpack.config.js` file. If you don't want to use webpack, please file an issue... a simpler development process is important motivation for this project, and I could really use your ideas / use case(s).

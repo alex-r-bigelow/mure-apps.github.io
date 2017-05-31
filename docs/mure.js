@@ -87,9 +87,9 @@ var _pouchdb = __webpack_require__(9);
 
 var _pouchdb2 = _interopRequireDefault(_pouchdb);
 
-var _apps = __webpack_require__(8);
+var _appList = __webpack_require__(8);
 
-var _apps2 = _interopRequireDefault(_apps);
+var _appList2 = _interopRequireDefault(_appList);
 
 var _index = __webpack_require__(5);
 
@@ -111,20 +111,19 @@ var Mure = function (_Model) {
 
     var _this = _possibleConstructorReturn(this, (Mure.__proto__ || Object.getPrototypeOf(Mure)).call(this));
 
-    _this.apps = _apps2.default;
+    _this.appList = _appList2.default;
     // Funky stuff to figure out if we're debugging (if that's the case, we want to use
     // localhost instead of the github link for all links)
     var windowTitle = document.getElementsByTagName('title')[0];
     windowTitle = windowTitle ? windowTitle.textContent : '';
     _this.debugMode = window.location.hostname === 'localhost' && windowTitle.startsWith('Mure');
-    // Once we know whether we're debugging, figure out the current app name
-    _this.currentApp = Object.keys(_apps2.default).filter(function (d) {
-      if (_this.debugMode) {
-        return parseInt(window.location.port) === _this.apps[d].debug_port;
-      } else {
-        return window.location.href.startsWith(_this.apps[d].public_url);
-      }
-    })[0];
+
+    // Figure out which app we are (or null if the mure library is being used somewhere else)
+    _this.currentApp = window.location.pathname.replace(/\//g, '');
+    if (!_this.appList[_this.currentApp]) {
+      _this.currentApp = null;
+    }
+
     // Create / load the local database of files
     _this.db = _this.getOrInitDb();
 
@@ -223,7 +222,7 @@ var Mure = function (_Model) {
   }, {
     key: 'openApp',
     value: function openApp(appName) {
-      console.log('todo: switch to ' + this.apps[appName]);
+      window.open(appName, '_blank');
     }
   }, {
     key: 'getSvgBlob',
@@ -585,15 +584,10 @@ exports.default = Model;
 /***/ (function(module, exports) {
 
 module.exports = {
-	"Mure": {
-		"debug_directory": "mure-apps.github.io",
-		"public_url": "http://mure-apps.github.io/docs",
-		"icon": "mure.svg"
-	},
-	"Data binder": {
-		"debug_directory": "mure-data-binder",
-		"public_url": "http://mure-apps.github.io/mure-data-binder",
-		"icon": "mure-data-binder.svg"
+	"data-binder": {
+		"name": "data-binder",
+		"description": "A Mure app that is responsible for (re)binding data to graphics",
+		"author": "Alex Bigelow"
 	}
 };
 

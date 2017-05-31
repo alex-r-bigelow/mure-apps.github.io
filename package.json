@@ -1,7 +1,7 @@
 {
-  "name": "my-es6-boilerplate",
+  "name": "mure-apps.github.io",
   "version": "0.1.0",
-  "description": "Boilerplate for webpack, according to Alex Bigelow.",
+  "description": "The core app / landing page for Mure",
   "repository": {
     "type": "git"
   },

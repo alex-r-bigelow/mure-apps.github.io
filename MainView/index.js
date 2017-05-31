@@ -3,8 +3,8 @@ import mure from '../mure-library/mure.js';
 import View from '../lib/View';
 
 import downloadIcon from '../img/download.svg';
-import openFileIcon from '../img/openFileIcon.svg';
-import trashCanIcon from '../img/trashCanIcon.svg';
+import openFileIcon from '../img/openFile.svg';
+import trashCanIcon from '../img/trashCan.svg';
 
 import template from './template.html';
 import './style.scss';
