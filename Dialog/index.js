@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import View from '../lib/View';
+import { View } from 'uki';
 
 import newFileDialogTemplate from './newFileDialog.html';
 

@@ -1,4 +1,4 @@
-import View from '../lib/View';
+import { View } from 'uki';
 import template from './template.html';
 import './style.scss';
 

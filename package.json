@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "backbone": "^1.3.3",
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "mure": "git+https://github.com/mure-apps/mure-library.git",
+    "uki": "^0.1.0"
   }
 }

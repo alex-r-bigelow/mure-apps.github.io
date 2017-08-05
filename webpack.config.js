@@ -7,9 +7,7 @@ var WebpackShellPlugin = require('webpack-shell-plugin');
 module.exports = {
   // Entry point for static analyzer
   entry: {
-    'webpack-bundle': './index.js',
-    'mure': './mure-library/mure.js',
-    'mureInteractivityRunner': './mure-library/mureInteractivityRunner.js'
+    'webpack-bundle': './index.js'
   },
 
   output: {
@@ -23,16 +21,11 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'index.html',
-      inject: 'body',
-      excludeChunks: ['mure', 'mureInteractivityRunner']
+      inject: 'body'
     }),
     new WebpackShellPlugin({
       onBuildStart: [
         'cd lib && ../node_modules/rollup/bin/rollup -c && ../node_modules/uglify-js/bin/uglifyjs d3.js -c -m -o d3.min.js'
-      ],
-      onBuildExit: [
-        './node_modules/uglify-js/bin/uglifyjs docs/mure.js -c -m -o docs/mure.min.js',
-        './node_modules/uglify-js/bin/uglifyjs docs/mureInteractivityRunner.js -c -m -o docs/mureInteractivityRunner.min.js'
       ]
     })
   ],

@@ -1,6 +1,6 @@
-import mure from '../mure-library/mure.js';
+import mure from 'mure';
 
-import View from '../lib/View';
+import { View } from 'uki';
 import template from './template.html';
 import './style.scss';
 

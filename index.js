@@ -1,4 +1,4 @@
-import mure from './mure-library/mure.js';
+import mure from 'mure';
 import * as d3 from 'd3';
 
 window.d3 = d3; // strap d3 to the window for debugging console access

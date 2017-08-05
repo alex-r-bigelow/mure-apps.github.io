@@ -1,6 +1,6 @@
-import mure from '../mure-library/mure.js';
+import mure from 'mure';
 
-import View from '../lib/View';
+import { View } from 'uki';
 
 import downloadIcon from '../img/download.svg';
 import openFileIcon from '../img/openFile.svg';
