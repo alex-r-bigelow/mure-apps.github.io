@@ -2,50 +2,93 @@
 var fs = require('fs');
 var path = require('path');
 var colors = require('ansi-256-colors');
+var portscanner = require('portscanner');
+var shell = require('shelljs');
+var request = require('request');
 var express = require('express');
-var webpack = require('webpack');
-var middleware = require('webpack-dev-middleware');
-// TODO: get the app list from the mure library instead of reading the submodule file
-var apps = require(path.join(__dirname, 'mure-library/src/appList.json'));
+var mure = require('mure');
+
+var statusColor = colors.fg.getRgb(1, 3, 2);
+var errorColor = colors.fg.getRgb(5, 1, 3);
+
+var firstPort = 8080;
+var lastPort = 9000;
+
+function logLines (prefix, data) {
+  process.stdout.write(data.split('\n').map(line => line ? prefix + line : '').join('\n'));
+}
+
+var appList = [{
+  appName: 'Main app',
+  path: __dirname,
+  publicPath: '/docs',
+  proxySubpath: '/docs'
+}];
+console.log(statusColor + 'Main app ready' + colors.reset);
+
+Object.keys(mure.appList).forEach(appName => {
+  // Validate that both package.json and webpack.config.js exist
+  try {
+    var appPath = path.join(__dirname, 'apps/' + appName);
+    var packageJson = require(appPath + '/package.json');
+    var subConfig = require(appPath + '/webpack.config.js');
+
+    appList.push({
+      appName: appName,
+      path: appPath,
+      publicPath: '/' + appName
+    });
+    console.log(statusColor + appName + ' ready' + colors.reset);
+  } catch (ex) {
+    console.log(errorColor + 'Error recognizing ' + appName + ':\n' + ex.message + colors.reset);
+  }
+})
 
 var app = express();
 
-/* Serve the root app */
-var rootConfig = require('./webpack.config.js');
-rootConfig.output.publicPath = '/docs';
-var rootCompiler = webpack(rootConfig, () => {});
-var rootMiddleware = middleware(rootCompiler, {
-  publicPath: '/docs',
-  stats: { colors: true }
-});
-app.use(rootMiddleware);
-console.log(colors.fg.getRgb(1, 3, 2) + 'main app loaded successfully!' + colors.reset);
+var promiseChain = Promise.resolve(firstPort + 1);
+appList.forEach(appSpec => {
+  // Sneaky hack to make port-finding synchronous
+  promiseChain = promiseChain.then(nextPossiblePort => {
+    return portscanner.findAPortNotInUse(nextPossiblePort, lastPort).then(port => {
+      // Flag this port as ours
+      if (port >= lastPort) {
+        console.log(errorColor + 'Ran out of available ports!' + colors.reset);
+        process.exit(1);
+      }
 
-/* Serve the redirect to the compiled docs directory (simulates what we
-   have to do for the github organization page) */
-app.use(express.static('.'));
+      // Start the development server
+      console.log(statusColor + 'Starting ' + appSpec.appName + ' on port ' + port + colors.reset);
+      var process = shell.exec(
+        'cd ' + appSpec.path + ' && webpack-dev-server --watch --colors --port ' + port,
+        { silent: true, async: true },
+        (code, stdout, stderr) => {
+          console.log(errorColor + appSpec.appName + ' exited with code ' + code + colors.reset);
+        });
+      process.stdout.on('data', data => {
+        logLines(statusColor + appSpec.appName + ': ' + colors.reset, data);
+      });
+      process.stderr.on('data', data => {
+        logLines(errorColor + appSpec.appName + ': ' + colors.reset, data);
+      });
 
-app.listen(8080);
+      // Proxy the port
+      console.log(statusColor + 'Proxying ' + appSpec.appName + ' (' + port + ') as http://localhost:' + firstPort + appSpec.publicPath + colors.reset);
+      app.use(appSpec.publicPath, (req, res) => {
+        var url = 'http://localhost:' + port + (appSpec.proxySubpath ? appSpec.proxySubpath : '');
+        req.pipe(request(url)).pipe(res);
+      });
 
-/*
-Object.keys(apps).forEach(function (appName) {
-  // Validate that both package.json and webpack.config.js exist
-  try {
-    var packageJson = require(path.join(__dirname, 'apps/' + appName + '/package.json'));
-    var subConfig = require(path.join(__dirname, 'apps/' + appName + '/webpack.config.js'));
-
-    // Serve the submodule
-    subConfig.context = path.join(__dirname, 'apps/' + appName);
-    subConfig.output.publicPath = '/' + appName;
-    var subCompiler = webpack(subConfig, () => {});
-    var subMiddleware = middleware(subCompiler, {
-      publicPath: '/' + appName,
-      stats: { colors: true }
+      return port + 1;
+    }).catch(err => {
+      console.log(errorColor + 'Error starting ' + appSpec.appName +
+        ', attempting port range ' + nextPossiblePort + ' - ' + lastPort + colors.reset);
+      return nextPossiblePort + 1;
     });
-    app.use(subMiddleware);
-    console.log(colors.fg.getRgb(1, 3, 2) + appName + ' app loaded successfully!' + colors.reset);
-  } catch (ex) {
-    console.log(colors.fg.getRgb(5, 1, 3) + 'Error loading ' + appName + ':\n' + ex.message + colors.reset);
-  }
+  });
 });
-*/
+
+promiseChain.then(() => {
+  app.listen(firstPort);
+  console.log(statusColor + 'Proxying all ports, mimicing github.io paths under http://localhost:' + firstPort + colors.reset);
+});
