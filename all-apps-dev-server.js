@@ -26,6 +26,7 @@ console.log(colors.fg.getRgb(1, 3, 2) + 'main app loaded successfully!' + colors
 app.use(express.static('.'));
 
 app.listen(8080);
+
 /*
 Object.keys(apps).forEach(function (appName) {
   // Validate that both package.json and webpack.config.js exist
