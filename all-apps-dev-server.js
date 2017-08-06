@@ -10,6 +10,7 @@ var mure = require('mure');
 
 var statusColor = colors.fg.getRgb(1, 3, 2);
 var errorColor = colors.fg.getRgb(5, 1, 3);
+var routingColor = colors.fg.getRgb(4, 2, 0);
 
 var firstPort = 8080;
 var lastPort = 9000;
@@ -51,7 +52,7 @@ appList.forEach(appSpec => {
   // Sneaky hack to make port-finding synchronous
   promiseChain = promiseChain.then(nextPossiblePort => {
     return portscanner.findAPortNotInUse(nextPossiblePort, lastPort).then(port => {
-      // Flag this port as ours
+      // Check if we're out of ports
       if (port >= lastPort) {
         console.log(errorColor + 'Ran out of available ports!' + colors.reset);
         process.exit(1);
@@ -73,12 +74,15 @@ appList.forEach(appSpec => {
       });
 
       // Proxy the port
-      console.log(statusColor + 'Proxying ' + appSpec.appName + ' (' + port + ') as http://localhost:' + firstPort + appSpec.publicPath + colors.reset);
+      console.log(routingColor + 'Proxying ' + appSpec.appName + ' (' + port + ') as http://localhost:' + firstPort + appSpec.publicPath + colors.reset);
       app.use(appSpec.publicPath, (req, res) => {
-        var url = 'http://localhost:' + port + (appSpec.proxySubpath ? appSpec.proxySubpath : '');
-        req.pipe(request(url)).pipe(res);
+        var originalUrl = req.protocol + '://localhost:' + firstPort + req.originalUrl;
+        var url = 'http://localhost:' + port + (appSpec.proxySubpath ? appSpec.proxySubpath : '') + req.path;
+        console.log(routingColor + 'Routing ' + colors.reset + originalUrl + ' to ' + url);
+        req.pipe(request({ uri: url, qs: req.query })).pipe(res);
       });
 
+      // pass the next port number to the next chained promise
       return port + 1;
     }).catch(err => {
       console.log(errorColor + 'Error starting ' + appSpec.appName +
@@ -90,5 +94,5 @@ appList.forEach(appSpec => {
 
 promiseChain.then(() => {
   app.listen(firstPort);
-  console.log(statusColor + 'Proxying all ports, mimicing github.io paths under http://localhost:' + firstPort + colors.reset);
+  console.log(routingColor + 'Proxying all ports, mimicing github.io paths under http://localhost:' + firstPort + colors.reset);
 });
