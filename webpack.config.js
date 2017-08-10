@@ -17,7 +17,7 @@ module.exports = {
     // Filename to use in HTML
     filename: '[name].js'
   },
-  devtool: 'cheap-source-map',
+  devtool: 'cheap-eval-source-map',
   plugins: [
     new HtmlWebpackPlugin({
       template: 'index.html',
@@ -60,14 +60,6 @@ module.exports = {
       {
         test: /\.json$/,
         loader: 'json-loader'
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /(node_modules|web_client)/,
-        query: {
-          presets: ['es2015']
-        }
       }
     ]
   },
