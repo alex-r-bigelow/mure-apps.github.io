@@ -60,7 +60,7 @@ let opsMenu = [
       new NewFileDialog(newFileSpecs => {
         let newFileText = '<svg width="' + newFileSpecs.width + '" height="' + newFileSpecs.height + '"></svg>';
         let newBlob = new window.Blob([newFileText], { type: 'image/svg+xml' });
-        newBlob.name = newFileSpecs.name;
+        newBlob.name = newFileSpecs.name + '.svg';
         mure.uploadSvg(newBlob);
       }).render();
     }

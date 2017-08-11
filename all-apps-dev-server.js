@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-var fs = require('fs');
 var path = require('path');
 var colors = require('ansi-256-colors');
 var portscanner = require('portscanner');
@@ -30,8 +29,6 @@ Object.keys(mure.appList).forEach(appName => {
   // Validate that both package.json and webpack.config.js exist
   try {
     var appPath = path.join(__dirname, 'apps/' + appName);
-    var packageJson = require(appPath + '/package.json');
-    var subConfig = require(appPath + '/webpack.config.js');
 
     appList.push({
       appName: appName,
@@ -42,7 +39,7 @@ Object.keys(mure.appList).forEach(appName => {
   } catch (ex) {
     console.log(errorColor + 'Error recognizing ' + appName + ':\n' + ex.message + colors.reset);
   }
-})
+});
 
 var app = express();
 
@@ -94,6 +91,7 @@ appList.forEach(appSpec => {
     }).catch(err => {
       console.log(errorColor + 'Error starting ' + appSpec.appName +
         ', attempting port range ' + nextPossiblePort + ' - ' + lastPort + colors.reset);
+      logLines(errorColor + appSpec.appName + colors.reset, err.message);
       return nextPossiblePort + 1;
     });
   });
