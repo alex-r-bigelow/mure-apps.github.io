@@ -4,10 +4,7 @@ import * as d3 from 'd3';
 window.d3 = d3; // strap d3 to the window for debugging console access
 
 import MainView from './MainView';
-import DocView from './DocView';
-import Toolbar from './Toolbar';
-
-import { NewFileDialog } from './Dialog';
+import { DocView, Toolbar, NewFileDialog } from 'mure-ui';
 
 import gearIcon from './img/gear.svg';
 import newFileIcon from './img/newFile.svg';
