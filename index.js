@@ -4,16 +4,13 @@ import * as d3 from 'd3';
 window.d3 = d3; // strap d3 to the window for debugging console access
 
 import MainView from './MainView';
-import { DocView, Toolbar, NewFileDialog } from 'mure-ui';
+import { DocView, Toolbar, NewFileDialog, updateImgColorFilters } from 'mure-ui';
+import './style.scss';
+updateImgColorFilters();
 
 import gearIcon from './img/gear.svg';
 import newFileIcon from './img/newFile.svg';
 import uploadIcon from './img/upload.svg';
-
-import './style/layout.scss';
-import './style/buttons.scss';
-import './style/scrollbars.scss';
-import './lib/recolorImages.js';
 
 import demoSvgText from '!raw-loader!./demo.svg';
 

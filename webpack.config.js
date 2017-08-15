@@ -2,7 +2,6 @@
 
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var WebpackShellPlugin = require('webpack-shell-plugin');
 
 module.exports = {
   // Entry point for static analyzer
@@ -22,11 +21,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html',
       inject: 'body'
-    }),
-    new WebpackShellPlugin({
-      onBuildStart: [
-        'cd lib && ../node_modules/rollup/bin/rollup -c && ../node_modules/uglify-js/bin/uglifyjs d3.js -c -m -o d3.min.js'
-      ]
     })
   ],
   module: {
@@ -62,10 +56,5 @@ module.exports = {
         loader: 'json-loader'
       }
     ]
-  },
-  resolve: {
-    alias: {
-      'd3': path.resolve(__dirname, 'lib/d3.min.js')
-    }
   }
 };
