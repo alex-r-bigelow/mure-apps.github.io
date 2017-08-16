@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 window.d3 = d3; // strap d3 to the window for debugging console access
 
 import MainView from './MainView';
-import { DocView, Toolbar, NewFileDialog, updateImgColorFilters } from 'mure-ui';
+import { DocView, Toolbar, AppToolbar, NewFileDialog, updateImgColorFilters } from 'mure-ui';
 import './style.scss';
 updateImgColorFilters();
 
@@ -16,28 +16,6 @@ import demoSvgText from '!raw-loader!./demo.svg';
 
 mure.loadUserLibraries = true;
 mure.runUserScripts = true;
-
-function buildAppMenu () {
-  let appMenu = [
-    {
-      onclick: () => {},
-      label: 'Mure',
-      icon: require('./img/app.svg'),
-      selected: true
-    }
-  ];
-  Object.keys(mure.appList).forEach(appName => {
-    appMenu.push({
-      onclick: () => {
-        mure.openApp(appName);
-      },
-      label: appName,
-      icon: require('./apps/' + appName + '/img/app.svg'),
-      selected: false
-    });
-  });
-  return appMenu;
-}
 
 let opsMenu = [
   {
@@ -51,10 +29,30 @@ let opsMenu = [
     label: 'New File',
     icon: newFileIcon,
     onclick: () => {
-      new NewFileDialog(newFileSpecs => {
+      new NewFileDialog('svg', [
+        {
+          label: 'Width',
+          attrs: {
+            type: 'number',
+            id: 'width',
+            min: 1,
+            value: 512
+          }
+        },
+        {
+          label: 'Height',
+          attrs: {
+            type: 'number',
+            id: 'height',
+            min: 1,
+            value: 512
+          }
+        }
+      ],
+      newFileSpecs => {
         let newFileText = '<svg width="' + newFileSpecs.width + '" height="' + newFileSpecs.height + '"></svg>';
         let newBlob = new window.Blob([newFileText], { type: 'image/svg+xml' });
-        newBlob.name = newFileSpecs.name + '.svg';
+        newBlob.name = newFileSpecs.name;
         mure.uploadSvg(newBlob);
       }).render();
     }
@@ -92,7 +90,7 @@ function setup () {
   docView = new DocView(demoSvgText);
   docView.render(d3.select('#docView'));
 
-  appMenu = new Toolbar(buildAppMenu());
+  appMenu = new AppToolbar();
   appMenu.render(d3.select('#appMenu'));
 
   fileOpsMenu = new Toolbar(opsMenu);

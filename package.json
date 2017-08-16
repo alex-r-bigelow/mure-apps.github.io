@@ -22,13 +22,13 @@
     "style-loader": "^0.18.2",
     "uglify-js": "^3.0.27",
     "url-loader": "^0.5.9",
-    "webpack": "^3.5.4"
+    "webpack": "^3.5.5"
   },
   "dependencies": {
     "d3": "^4.10.0",
     "jquery": "^3.2.1",
-    "mure": "^0.1.0",
-    "mure-ui": "^0.1.2",
+    "mure": "^0.1.1",
+    "mure-ui": "^0.1.4",
     "pouchdb": "^6.3.4",
     "uki": "^0.1.0"
   },

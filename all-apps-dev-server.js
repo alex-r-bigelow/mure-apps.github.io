@@ -45,6 +45,10 @@ var app = express();
 
 var promiseChain = Promise.resolve(firstPort + 1);
 appList.forEach(appSpec => {
+  if (appSpec.appName === 'docs') {
+    // We already started the main app
+    return;
+  }
   // Sneaky hack to make port-finding synchronous
   promiseChain = promiseChain.then(nextPossiblePort => {
     return portscanner.findAPortNotInUse(nextPossiblePort, lastPort).then(port => {
