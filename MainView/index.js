@@ -42,7 +42,7 @@ class MainView extends View {
       .text('Open');
     let openButtons = allFiles.select('.open')
       .on('click', d => {
-        mure.setCurrentFile(d);
+        mure.setCurrentFile(mure.lastFile === d ? null : d);
       });
     mure.getCurrentFilename().then(currentFile => {
       openButtons.classed('selected', d => d === currentFile);

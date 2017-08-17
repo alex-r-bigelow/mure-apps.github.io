@@ -1,7 +1,9 @@
 import mure from 'mure';
 import * as d3 from 'd3';
 
-window.d3 = d3; // strap d3 to the window for debugging console access
+// strap mure and d3 to the window for debugging console access
+window.mure = mure;
+window.d3 = d3;
 
 import MainView from './MainView';
 import { DocView, Toolbar, AppToolbar, NewFileDialog, updateImgColorFilters } from 'mure-ui';
