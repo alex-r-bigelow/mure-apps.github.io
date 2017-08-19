@@ -31,7 +31,7 @@ let opsMenu = [
     label: 'New File',
     icon: newFileIcon,
     onclick: () => {
-      new NewFileDialog('svg', [
+      new NewFileDialog('.svg', [
         {
           label: 'Width',
           attrs: {

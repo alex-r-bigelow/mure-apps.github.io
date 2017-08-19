@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import mure from 'mure';
 
 import { View } from 'uki';
@@ -26,12 +27,12 @@ class MainView extends View {
     let allFiles = d3el.selectAll('li')
       .data(fileList, d => d);
     allFiles.exit().remove();
-
     let allFilesEnter = allFiles.enter().append('li');
+    allFiles = allFiles.merge(allFilesEnter);
+
     allFilesEnter.append('span')
       .classed('fileTitle', true);
-
-    allFiles = allFiles.merge(allFilesEnter);
+    // We add the text label last so it can adjust to the available space
 
     let openButtonsEnter = allFilesEnter.append('div')
       .classed('open', true)
@@ -66,9 +67,23 @@ class MainView extends View {
       .attr('src', trashCanIcon);
     deleteButtonsEnter.append('label')
       .text('Delete');
+    allFiles.select('.delete').select('a')
+      .on('click', d => { mure.deleteSvg(d); });
 
-    allFiles.select('.fileTitle').text(d => d);
-    allFiles.select('.delete').select('a').on('click', d => { mure.deleteSvg(d); });
+    let self = this;
+    allFiles.select('.fileTitle').each(function (d) {
+      let buttonLeft = d3.select(this.parentNode)
+        .select('.open.button').node().getBoundingClientRect().left;
+      let parentLeft = this.parentNode.getBoundingClientRect().left;
+      let maxLabelWidth = buttonLeft - parentLeft - 1.5 * self.emSize;
+      let label = d;
+      this.textContent = label;
+      // truncate long file names
+      while (this.clientWidth > maxLabelWidth) {
+        label = label.substr(0, label.length - 10) + '...' + label.substr(label.length - 6, 6);
+        this.textContent = label;
+      }
+    });
   }
 }
 
