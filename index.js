@@ -16,15 +16,12 @@ import uploadIcon from './img/upload.svg';
 
 import demoSvgText from '!raw-loader!./demo.svg';
 
-mure.loadUserLibraries = true;
-mure.runUserScripts = true;
-
 let opsMenu = [
   {
     label: 'Settings',
     icon: gearIcon,
     events: {
-      onclick: () => {
+      click: () => {
         console.log('todo: settings dialog');
       }
     }
@@ -33,7 +30,7 @@ let opsMenu = [
     label: 'New File',
     icon: newFileIcon,
     events: {
-      onclick: () => {
+      click: () => {
         new NewFileDialog('.svg', [
           {
             label: 'Width',
@@ -67,7 +64,7 @@ let opsMenu = [
     label: 'Upload',
     icon: uploadIcon,
     events: {
-      onclick: () => {
+      click: () => {
         let inputField = d3.select('body')
           .append('input')
           .attr('type', 'file')
@@ -95,7 +92,7 @@ function setup () {
   mainView = new MainView();
   mainView.render(d3.select('#mainView'));
 
-  docView = new DocView(demoSvgText);
+  docView = new DocView(demoSvgText, true);
   docView.render(d3.select('#docView'));
 
   appMenu = new AppToolbar();
