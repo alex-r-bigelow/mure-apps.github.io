@@ -13,7 +13,7 @@ body {
 body {
   display: block !important;  /* a hack to get around webpack stylesheet loading order issues */
   color: $textColor;
-  background-color: $pageBackground;
+  background-color: $darkestPanelColor;
   font-family: 'Josefin Slab', serif;
 }
 #backgroundGradient {

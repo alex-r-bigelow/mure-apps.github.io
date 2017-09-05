@@ -90,15 +90,16 @@ let fileOpsMenu;
 
 function setup () {
   mainView = new MainView();
-  mainView.render(d3.select('#mainView'));
-
   docView = new DocView(demoSvgText, true);
-  docView.render(d3.select('#docView'));
-
   appMenu = new AppToolbar();
-  appMenu.render(d3.select('#appMenu'));
-
   fileOpsMenu = new Toolbar(opsMenu);
+  renderAll();
+}
+function renderAll () {
+  mainView.render(d3.select('#mainView'));
+  docView.render(d3.select('#docView'));
+  appMenu.render(d3.select('#appMenu'));
   fileOpsMenu.render(d3.select('#fileOpsMenu'));
 }
-window.onload = window.onresize = setup;
+window.onload = setup;
+window.onresize = renderAll;
