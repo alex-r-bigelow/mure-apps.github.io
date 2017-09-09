@@ -56,5 +56,8 @@ module.exports = {
         loader: 'json-loader'
       }
     ]
+  },
+  resolve: {
+    mainFields: ['esnext', 'module', 'jsnext:main', 'browser', 'main']
   }
 };

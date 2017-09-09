@@ -16,66 +16,69 @@ import uploadIcon from './img/upload.svg';
 
 import demoSvgText from '!raw-loader!./demo.svg';
 
-mure.loadUserLibraries = true;
-mure.runUserScripts = true;
-
 let opsMenu = [
   {
     label: 'Settings',
     icon: gearIcon,
-    onclick: () => {
-      console.log('todo: settings dialog');
+    events: {
+      click: () => {
+        console.log('todo: settings dialog');
+      }
     }
   },
   {
     label: 'New File',
     icon: newFileIcon,
-    onclick: () => {
-      new NewFileDialog('.svg', [
-        {
-          label: 'Width',
-          attrs: {
-            type: 'number',
-            id: 'width',
-            min: 1,
-            value: 512
+    events: {
+      click: () => {
+        new NewFileDialog('.svg', [
+          {
+            label: 'Width',
+            attrs: {
+              type: 'number',
+              id: 'width',
+              min: 1,
+              value: 512
+            }
+          },
+          {
+            label: 'Height',
+            attrs: {
+              type: 'number',
+              id: 'height',
+              min: 1,
+              value: 512
+            }
           }
-        },
-        {
-          label: 'Height',
-          attrs: {
-            type: 'number',
-            id: 'height',
-            min: 1,
-            value: 512
-          }
-        }
-      ],
-      newFileSpecs => {
-        let newFileText = '<svg width="' + newFileSpecs.width + '" height="' + newFileSpecs.height + '"></svg>';
-        let newBlob = new window.Blob([newFileText], { type: 'image/svg+xml' });
-        newBlob.name = newFileSpecs.name;
-        mure.uploadSvg(newBlob);
-      }).render();
+        ],
+        newFileSpecs => {
+          let newFileText = '<svg width="' + newFileSpecs.width + '" height="' + newFileSpecs.height + '"></svg>';
+          let newBlob = new window.Blob([newFileText], { type: 'image/svg+xml' });
+          newBlob.name = newFileSpecs.name;
+          mure.uploadSvg(newBlob);
+        }).render();
+      }
     }
   },
   {
     label: 'Upload',
     icon: uploadIcon,
-    onclick: () => {
-      let inputField = d3.select('body')
-        .append('input')
-        .attr('type', 'file')
-        .property('multiple', true)
-        .attr('accept', '.svg')
-        .style('display', 'none')
-        .on('change', () => {
-          Array.from(inputField.node().files).forEach(fileObj => {
-            mure.uploadSvg(fileObj);
+    events: {
+      click: () => {
+        let inputField = d3.select('body')
+          .append('input')
+          .attr('type', 'file')
+          .property('multiple', true)
+          .attr('accept', '.svg')
+          .style('display', 'none')
+          .on('change', () => {
+            Array.from(inputField.node().files).forEach(fileObj => {
+              mure.uploadSvg(fileObj);
+            });
+            inputField.remove();
           });
-          inputField.remove();
-        });
-      inputField.node().click();
+        inputField.node().click();
+      }
     }
   }
 ];
@@ -87,15 +90,16 @@ let fileOpsMenu;
 
 function setup () {
   mainView = new MainView();
-  mainView.render(d3.select('#mainView'));
-
-  docView = new DocView(demoSvgText);
-  docView.render(d3.select('#docView'));
-
+  docView = new DocView(demoSvgText, true);
   appMenu = new AppToolbar();
-  appMenu.render(d3.select('#appMenu'));
-
   fileOpsMenu = new Toolbar(opsMenu);
+  renderAll();
+}
+function renderAll () {
+  mainView.render(d3.select('#mainView'));
+  docView.render(d3.select('#docView'));
+  appMenu.render(d3.select('#appMenu'));
   fileOpsMenu.render(d3.select('#fileOpsMenu'));
 }
-window.onload = window.onresize = setup;
+window.onload = setup;
+window.onresize = renderAll;
