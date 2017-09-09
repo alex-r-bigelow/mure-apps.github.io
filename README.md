@@ -7,6 +7,17 @@ Setup:
     git clone --recursive https://github.com/mure-apps/mure-apps.github.io.git
     npm install
 
+If you want to work on `mure-library` or `mure-ui`, follow these steps:
+    cd mure-library
+    npm link
+    cd ..
+    npm link mure
+
+    cd mure-ui
+    npm link
+    cd ..
+    npm link mure-ui
+
 Development:
 ============
 
