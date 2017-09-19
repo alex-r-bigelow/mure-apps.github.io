@@ -59,5 +59,15 @@ module.exports = {
   },
   resolve: {
     mainFields: ['esnext', 'module', 'jsnext:main', 'browser', 'main']
+  },
+  node: {
+    fs: 'empty'
+  },
+  stats: {
+    warnings: false
+  },
+  devServer: {
+    noInfo: true,
+    clientLogLevel: 'none'
   }
 };

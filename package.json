@@ -32,5 +32,8 @@
     "pouchdb": "^6.3.4",
     "uki": "^0.1.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  }
 }

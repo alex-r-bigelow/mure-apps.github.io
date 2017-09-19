@@ -1,3 +1,4 @@
+
 import mure from 'mure';
 import * as d3 from 'd3';
 
@@ -14,7 +15,9 @@ import gearIcon from './img/gear.svg';
 import newFileIcon from './img/newFile.svg';
 import uploadIcon from './img/upload.svg';
 
+/* eslint-disable import/no-webpack-loader-syntax */
 import demoSvgText from '!raw-loader!./demo.svg';
+/* eslint-enable import/no-webpack-loader-syntax */
 
 let opsMenu = [
   {
