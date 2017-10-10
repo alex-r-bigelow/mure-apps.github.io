@@ -7,3 +7,6 @@
 [submodule "mure-ui"]
 	path = mure-ui
 	url = https://github.com/mure-apps/mure-ui.git
+[submodule "apps/encoding-manager"]
+	path = apps/encoding-manager
+	url = https://github.com/mure-apps/encoding-manager.git
