@@ -6,6 +6,15 @@ Setup:
 ======
     git clone --recursive https://github.com/mure-apps/mure-apps.github.io.git
     npm install
+    cd mure-library
+    npm install
+    cd ../mure-ui
+    npm install
+    cd ../apps/data-binder
+    npm install
+    cd ../encoding-manager
+    npm install
+    cd ../..
 
 If you want to work on `mure-library` or `mure-ui`, follow these steps:
     cd mure-library

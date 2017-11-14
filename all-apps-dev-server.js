@@ -61,7 +61,7 @@ appList.forEach(appSpec => {
       // Start the development server
       console.log(statusColor + 'Starting ' + appSpec.appName + ' on port ' + port + colors.reset);
       var process = shell.exec(
-        'cd ' + appSpec.path + ' && webpack-dev-server --watch --colors --port ' + port + ' --output-public-path ' + appSpec.publicPath,
+        './node_modules/.bin/webpack-dev-server --context ' + appSpec.path + ' --watch --colors --port ' + port + ' --output-public-path ' + appSpec.publicPath,
         { silent: true, async: true },
         (code, stdout, stderr) => {
           console.log(errorColor + appSpec.appName + ' exited with code ' + code + colors.reset);
