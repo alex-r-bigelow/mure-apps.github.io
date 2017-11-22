@@ -1,15 +1,5 @@
-
 import mure from 'mure';
 import * as d3 from 'd3';
-
-// strap mure and d3 to the window for debugging console access
-window.mure = mure;
-window.d3 = d3;
-
-import MainView from './MainView';
-import { DocView, Toolbar, AppToolbar, NewFileDialog, updateImgColorFilters } from 'mure-ui';
-import './style.scss';
-updateImgColorFilters();
 
 import gearIcon from './img/gear.svg';
 import newFileIcon from './img/newFile.svg';
@@ -18,6 +8,15 @@ import uploadIcon from './img/upload.svg';
 /* eslint-disable import/no-webpack-loader-syntax */
 import demoSvgText from '!raw-loader!./demo.svg';
 /* eslint-enable import/no-webpack-loader-syntax */
+
+import MainView from './MainView';
+import { DocView, Toolbar, AppToolbar, NewFileDialog, updateImgColorFilters } from 'mure-ui';
+import './style.scss';
+updateImgColorFilters();
+
+// strap mure and d3 to the window for debugging console access
+window.mure = mure;
+window.d3 = d3;
 
 let opsMenu = [
   {
