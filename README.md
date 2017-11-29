@@ -4,31 +4,41 @@ The main page for the Mure ecosystem of applications
 
 Setup:
 ======
+_Recommended, but optional:_ Set up npm so that you don't have to use sudo for `npm link`:
+    mkdir ~/.npmglobal
+    echo "profile=/path/to/your/home/dir/.npmglobal" >> ~/.npmrc
+    echo "PATH=/path/to/your/home/dir/.npmglobal/bin:$PATH" >> ~/.profile
+
+Install the repository:
     git clone --recursive https://github.com/mure-apps/mure-apps.github.io.git
-    npm install
+
+Install the libraries and link them (so that later npm installs point to your local version instead of the public version):
     cd mure-library
     npm install
+    (sudo) npm link
+
     cd ../mure-ui
     npm install
-    cd ../apps/data-binder
-    npm install
-    cd ../encoding-manager
-    npm install
-    cd ../..
+    (sudo) npm link
 
-If you want to work on `mure-library` or `mure-ui`, follow these steps:
-    cd mure-library
-    npm link
+Install the main and other apps:
     cd ..
     npm link mure
-
-    cd mure-ui
-    npm link
-    cd ..
     npm link mure-ui
+    npm install
 
-Development:
-============
+    cd apps/data-binder
+    npm link mure
+    npm link mure-ui
+    npm install
+
+    cd ../encoding-manager
+    npm link mure
+    npm link mure-ui
+    npm install
+
+Running:
+========
 
 To just test out the main page:
 
