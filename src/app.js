@@ -1,6 +1,6 @@
 /* globals d3, mure */
 import SimpleSvgApp from './utils/SimpleSvgApp.js';
-import SvgScrollbar from './utils/SvgScrollbar.js';
+import SvgScrollArea from './utils/SvgScrollArea.js';
 window.app = new SimpleSvgApp(
   [
     'resolutions/1920x1080.svg'
@@ -11,10 +11,10 @@ window.app = new SimpleSvgApp(
     },
     onreload: () => {
       console.log('reloaded');
-      window.scrollbar = new SvgScrollbar(d3.select('#scrollMe'),
+      window.scrollbar = new SvgScrollArea(d3.select('#scrollMe').node(),
         {
-          verticalScrollbar: d3.select('#vertical'),
-          horizontalScrollbar: d3.select('#horizontal')
+          verticalScrollbar: d3.select('#vertical').node(),
+          horizontalScrollbar: d3.select('#horizontal').node()
         });
     },
     attrOverrideSpec: [
@@ -28,7 +28,21 @@ window.app = new SimpleSvgApp(
           {
             mouse: '#horizontal [data-scrollbar="right"]',
             effect: 'rect, path'
-          },
+          }
+        ],
+        disabled: {
+          templates: { '#scrollDisableTemplate': [ 'style' ] },
+          enableWhen: () => window.scrollbar.canScrollHorizontal
+        },
+        hover: {
+          templates: { '#scrollHoverTemplate': [ 'style' ] }
+        },
+        active: {
+          templates: { '#scrollActiveTemplate': [ 'style' ] }
+        }
+      },
+      {
+        targets: [
           '#vertical [data-scrollbar="handle"]',
           {
             mouse: '#vertical [data-scrollbar="up"]',
@@ -39,15 +53,15 @@ window.app = new SimpleSvgApp(
             effect: 'rect, path'
           }
         ],
+        disabled: {
+          templates: { '#scrollDisableTemplate': [ 'style' ] },
+          enableWhen: () => window.scrollbar.canScrollVertical
+        },
         hover: {
-          '#scrollHoverTemplate': [
-            'style'
-          ]
+          templates: { '#scrollHoverTemplate': [ 'style' ] }
         },
         active: {
-          '#scrollActiveTemplate': [
-            'style'
-          ]
+          templates: { '#scrollActiveTemplate': [ 'style' ] }
         }
       }
     ]

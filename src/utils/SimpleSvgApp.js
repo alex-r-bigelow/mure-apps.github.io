@@ -91,9 +91,9 @@ class SimpleSvgApp {
   attachAttrOverrideListeners () {
     let deriveAttrs = state => {
       let attrs = {};
-      Object.keys(state).forEach(sourceSelector => {
+      Object.keys(state.templates).forEach(sourceSelector => {
         let source = d3.select(sourceSelector);
-        state[sourceSelector].forEach(attr => {
+        state.templates[sourceSelector].forEach(attr => {
           attrs[attr] = source.attr(attr);
         });
       });
